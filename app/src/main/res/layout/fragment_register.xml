@@ -1,0 +1,152 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:padding="24dp"
+    android:background="#F7C4A5"
+    android:gravity="center">
+
+    <!-- Title Text -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Your Account"
+        android:textColor="#333333"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Username Input -->
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTextView"
+        android:layout_marginTop="40dp"
+        android:hint="Username"
+        android:padding="16dp"
+        android:background="@drawable/filled_edit_text"
+        android:inputType="text"
+        android:textColor="#333333"
+        android:textColorHint="#888888"/>
+
+    <!-- Username Validation Text -->
+    <TextView
+        android:id="@+id/usernameValidationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameEditText"
+        android:layout_marginTop="5dp"
+        android:text="Please enter a valid username"
+        android:textColor="#FF0000"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameValidationText"
+        android:layout_marginTop="20dp"
+        android:hint="Email"
+        android:padding="16dp"
+        android:background="@drawable/filled_edit_text"
+        android:inputType="textEmailAddress"
+        android:textColor="#333333"
+        android:textColorHint="#888888"/>
+
+    <!-- Email Validation Text -->
+    <TextView
+        android:id="@+id/emailValidationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailEditText"
+        android:layout_marginTop="5dp"
+        android:text="Please enter a valid email address"
+        android:textColor="#FF0000"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <!-- Password Input -->
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailValidationText"
+        android:layout_marginTop="20dp"
+        android:hint="Password"
+        android:padding="16dp"
+        android:background="@drawable/filled_edit_text"
+        android:inputType="textPassword"
+        android:textColor="#333333"
+        android:textColorHint="#888888"/>
+
+    <!-- Password Validation Text -->
+    <TextView
+        android:id="@+id/passwordValidationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordEditText"
+        android:layout_marginTop="5dp"
+        android:text="Please enter a valid password"
+        android:textColor="#FF0000"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <!-- Confirm Password Input -->
+    <EditText
+        android:id="@+id/confirmPasswordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordValidationText"
+        android:layout_marginTop="20dp"
+        android:hint="Confirm Password"
+        android:padding="16dp"
+        android:background="@drawable/filled_edit_text"
+        android:inputType="textPassword"
+        android:textColor="#333333"
+        android:textColorHint="#888888"/>
+
+    <!-- Confirm Password Validation Text -->
+    <TextView
+        android:id="@+id/confirmPasswordValidationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/confirmPasswordEditText"
+        android:layout_marginTop="5dp"
+        android:text="Passwords do not match"
+        android:textColor="#FF0000"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/confirmPasswordValidationText"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/filled_button_black"
+        android:text="Register"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:padding="16dp"/>
+
+    <!-- Login Text -->
+    <TextView
+        android:id="@+id/loginTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registerButton"
+        android:layout_marginTop="20dp"
+        android:text="Already have an account? Login"
+        android:textColor="#440381"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:onClick="onLoginTextViewClick"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
