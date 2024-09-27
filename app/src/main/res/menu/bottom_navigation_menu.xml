@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_oil_change"
+        android:icon="@drawable/home"
+        android:title="" />
+    <item
+        android:id="@+id/nav_maintenance"
+        android:icon="@drawable/settings"
+        android:title="" />
+    <item
+        android:id="@+id/nav_tyre_change"
+        android:icon="@drawable/tyre"
+        android:title="" />
+    <item
+        android:id="@+id/nav_driver_complaints"
+        android:icon="@drawable/ic_complaints"
+        android:title="" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="" />
+</menu>

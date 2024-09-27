@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7C4A5">
+
+    <!-- Header Layout with Dark Background -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentTop="true"
+        android:background="#3F0D12"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="Back"
+            android:onClick="GoHomeFromEditOrNew"
+            android:padding="2dp"
+            android:src="@drawable/backbutton" />
+
+        <!-- Title Text -->
+        <TextView
+            android:id="@+id/headerTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Oill Change/Service "
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerLayout"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:gravity="center">
+
+            <!-- Vehicle No. Input -->
+            <EditText
+                android:id="@+id/vehicleNoEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Vehicle No."
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="text"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Vehicle No. Validation Text -->
+            <TextView
+                android:id="@+id/vehicleNoValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vehicleNoEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a valid vehicle number"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Model Name Input -->
+            <EditText
+                android:id="@+id/modelNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vehicleNoValidationText"
+                android:layout_marginTop="20dp"
+                android:hint="Model Name"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="text"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Model Name Validation Text -->
+            <TextView
+                android:id="@+id/modelNameValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/modelNameEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a valid model name"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Date Input using DatePicker -->
+            <EditText
+                android:id="@+id/dateEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/modelNameValidationText"
+                android:layout_marginTop="20dp"
+                android:hint="Date"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Date Validation Text -->
+            <TextView
+                android:id="@+id/dateValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dateEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please select a valid date"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Running KM and Next Service KM in same line -->
+            <LinearLayout
+                android:id="@+id/kmLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dateValidationText"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/runningKmEditText"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="Running KM"
+                    android:padding="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/filled_edit_text"
+                    android:inputType="number"
+                    android:textColor="#333333"
+                    android:textColorHint="#888888"/>
+
+                <EditText
+                    android:id="@+id/nextServiceKmEditText"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="Next Service KM"
+                    android:padding="16dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/filled_edit_text"
+                    android:inputType="number"
+                    android:textColor="#333333"
+                    android:textColorHint="#888888"/>
+            </LinearLayout>
+
+            <!-- KM Validation Text -->
+            <TextView
+                android:id="@+id/kmValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/kmLayout"
+                android:layout_marginTop="5dp"
+                android:text="Please enter valid KM values"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="visible"/>
+
+            <!-- Diesel Filter Change Switch -->
+            <LinearLayout
+                android:id="@+id/dieselFilterLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/kmValidationText"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Diesel Filter Change"
+                    android:textColor="#333333"
+                    android:textSize="16sp"/>
+
+                <Switch
+                    android:id="@+id/dieselFilterSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- Break Oil Change Switch -->
+            <LinearLayout
+                android:id="@+id/breakOilLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dieselFilterLayout"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Break Oil Change"
+                    android:textColor="#333333"
+                    android:textSize="16sp"/>
+
+                <Switch
+                    android:id="@+id/breakOilSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- Coolant Change Switch -->
+            <LinearLayout
+                android:id="@+id/coolantLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/breakOilLayout"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Coolant Change"
+                    android:textColor="#333333"
+                    android:textSize="16sp"/>
+
+                <Switch
+                    android:id="@+id/coolantSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- Remark Input -->
+            <EditText
+                android:id="@+id/remarkEditText"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@id/coolantLayout"
+                android:layout_marginTop="20dp"
+                android:hint="Remark"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:gravity="top"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Remark Validation Text -->
+            <TextView
+                android:id="@+id/remarkValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/remarkEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a remark"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/remarkValidationText"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/filled_button_black"
+                android:text="Save"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:padding="14dp"/>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

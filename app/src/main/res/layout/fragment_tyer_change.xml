@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7C4A5">
+
+    <!-- Header Layout with Dark Background -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentTop="true"
+        android:background="#3F0D12"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="Back"
+            android:onClick="GoHomeFromEditOrNew"
+            android:padding="2dp"
+            android:src="@drawable/backbutton" />
+
+        <!-- Title Text -->
+        <TextView
+            android:id="@+id/headerTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Tyer Change"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerLayout"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:gravity="center">
+
+            <!-- Vehicle No. Input -->
+            <EditText
+                android:id="@+id/vehicleNoEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Vehicle No."
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="text"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Vehicle No. Validation Text -->
+            <TextView
+                android:id="@+id/vehicleNoValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vehicleNoEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a valid vehicle number"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Model Name Input -->
+            <EditText
+                android:id="@+id/modelNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vehicleNoValidationText"
+                android:layout_marginTop="20dp"
+                android:hint="Model Name"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="text"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Model Name Validation Text -->
+            <TextView
+                android:id="@+id/modelNameValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/modelNameEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a valid model name"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Tyre Qty Input -->
+            <EditText
+                android:id="@+id/tyreQtyEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/modelNameValidationText"
+                android:layout_marginTop="20dp"
+                android:hint="Tyre Qty"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="number"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Tyre Qty Validation Text -->
+            <TextView
+                android:id="@+id/tyreQtyValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tyreQtyEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a valid tyre quantity"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Alignment & Balancing Switch -->
+            <LinearLayout
+                android:id="@+id/alignmentBalancingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tyreQtyValidationText"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Alignment and Balancing"
+                    android:textColor="#333333"
+                    android:textSize="16sp"/>
+
+                <Switch
+                    android:id="@+id/alignmentBalancingSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- Alignment KM and Next Alignment KM Input (in same line) -->
+            <LinearLayout
+                android:id="@+id/alignmentKmLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/alignmentBalancingLayout"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/alignmentKmEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:hint="Alignment KM"
+                    android:padding="16dp"
+                    android:background="@drawable/filled_edit_text"
+                    android:inputType="number"
+                    android:textColor="#333333"
+                    android:textColorHint="#888888"/>
+
+                <EditText
+                    android:id="@+id/nextAlignmentKmEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:hint="Next Alignment KM"
+                    android:padding="16dp"
+                    android:background="@drawable/filled_edit_text"
+                    android:inputType="number"
+                    android:textColor="#333333"
+                    android:textColorHint="#888888"/>
+            </LinearLayout>
+
+            <!-- Alignment KM Validation Text -->
+            <TextView
+                android:id="@+id/alignmentKmValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/alignmentKmLayout"
+                android:layout_marginTop="5dp"
+                android:text="Please enter valid alignment KM values"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Remark Input -->
+            <EditText
+                android:id="@+id/remarkEditText"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@id/alignmentKmValidationText"
+                android:layout_marginTop="20dp"
+                android:hint="Remark"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:gravity="top"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
+            <!-- Remark Validation Text -->
+            <TextView
+                android:id="@+id/remarkValidationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/remarkEditText"
+                android:layout_marginTop="5dp"
+                android:text="Please enter a remark"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/remarkValidationText"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/filled_button_black"
+                android:text="Save"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:padding="14dp"/>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
