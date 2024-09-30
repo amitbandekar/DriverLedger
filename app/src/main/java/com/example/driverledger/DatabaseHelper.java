@@ -24,11 +24,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create tables
-        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_USER+" (id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT UNIQUE, username TEXT, password TEXT, email TEXT)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DRIVER_COMPLAINTS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, details TEXT, remarks TEXT, problemClosed INTEGER, currentDateTime TEXT)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SERVICING_DETAILS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, currentDateTime TEXT, runningKm INTEGER, nextServiceKm INTEGER, dieselFilterChange INTEGER, breakOilChange INTEGER, coolantChange INTEGER, remark TEXT)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MAINTENANCE_DETAILS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, details TEXT, currentDateTime TEXT)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TYRE_REPAIRS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, tyreQty INTEGER, alignmentBalancing INTEGER, alignmentKm INTEGER, nextAlignmentKm INTEGER, remark TEXT, currentDateTime TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_USER + " (id INTEGER PRIMARY KEY , user_key TEXT UNIQUE, username TEXT, password TEXT, email TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DRIVER_COMPLAINTS + "(id INTEGER PRIMARY KEY , vehicleNo TEXT, modelName TEXT, details TEXT, remarks TEXT, problemClosed INTEGER, currentDateTime TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SERVICING_DETAILS + "(id INTEGER PRIMARY KEY , vehicleNo TEXT, modelName TEXT, currentDateTime TEXT, runningKm INTEGER, nextServiceKm INTEGER, dieselFilterChange INTEGER, breakOilChange INTEGER, coolantChange INTEGER, remark TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MAINTENANCE_DETAILS + "(id INTEGER PRIMARY KEY , vehicleNo TEXT, modelName TEXT, details TEXT, currentDateTime TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TYRE_REPAIRS + "(id INTEGER PRIMARY KEY , vehicleNo TEXT, modelName TEXT, tyreQty INTEGER, alignmentBalancing INTEGER, alignmentKm INTEGER, nextAlignmentKm INTEGER, remark TEXT, currentDateTime TEXT)");
     }
 
     @Override

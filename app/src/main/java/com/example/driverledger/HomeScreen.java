@@ -31,10 +31,11 @@ public class HomeScreen extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this); // Correct context
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         ImageView addnew = findViewById(R.id.addIcon);
+        ImageView btnExportPdf = findViewById(R.id.btnExportPdf);
 
         ViewId = getIntent().getIntExtra("id", 1);
         // Load the default fragment (Driver Details)
-        loadFragment(new ListView(), ViewId);
+        loadFragment(new ListView());
 
         bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -61,7 +62,7 @@ public class HomeScreen extends AppCompatActivity {
                 }
 
                 if (fragment != null) {
-                    loadFragment(fragment, ViewId);
+                    loadFragment(fragment);
                 }
                 return true;
             }
@@ -71,17 +72,35 @@ public class HomeScreen extends AppCompatActivity {
         addnew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int id = 123;  // Example id
+
                 Intent intent = new Intent(HomeScreen.this, AddNew.class);
                 intent.putExtra("id", ViewId);
                 startActivity(intent);
             }
         });
+        btnExportPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PDFHandler pdfExporter = new PDFHandler(HomeScreen.this);
+                pdfExporter.importDataFromPDF(TableNames[ViewId - 1], HomeScreen.this);
+
+            }
+        });
+        btnExportPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PDFHandler pdfExporter = new PDFHandler(HomeScreen.this);
+                pdfExporter.exportDataToPDF(TableNames[ViewId - 1], HomeScreen.this);
+
+            }
+        });
+
+
     }
 
-    private void loadFragment(Fragment fragment, int Viewid) {
+    private void loadFragment(Fragment fragment) {
         Bundle bundle = new Bundle();
-        Cursor cursor = databaseHelper.getAllData(TableNames[Viewid - 1]); // Adjust index
+        Cursor cursor = databaseHelper.getAllData(TableNames[ViewId - 1]); // Adjust index
 
         ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
 
@@ -97,7 +116,7 @@ public class HomeScreen extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
 
-        bundle.putInt("ViewId", Viewid);
+        bundle.putInt("ViewId", ViewId);
         bundle.putSerializable("dataList", dataList);
         fragment.setArguments(bundle);
 

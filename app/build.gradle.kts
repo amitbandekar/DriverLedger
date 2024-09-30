@@ -47,6 +47,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.github.f0ris.sweetalert:library:1.6.2")
+    implementation ("com.itextpdf:itext7-core:7.1.15")
 
 
 }
