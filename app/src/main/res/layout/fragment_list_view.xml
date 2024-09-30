@@ -1,0 +1,45 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7C4A5">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/cardListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <!-- Dynamic Card items will be added here programmatically -->
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Loading GIF (Centered) -->
+    <ImageView
+        android:id="@+id/loadingImageView"
+        android:layout_width="56dp"
+        android:layout_height="59dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/loading_gif"
+        android:visibility="visible" /> <!-- Visible initially -->
+
+    <!-- No Records Found Message (Centered) -->
+    <TextView
+        android:id="@+id/noRecordsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No records found"
+        android:textSize="18sp"
+        android:textColor="#3F0D12"
+        android:visibility="gone"/> <!-- Hidden initially -->
+
+</RelativeLayout>
+

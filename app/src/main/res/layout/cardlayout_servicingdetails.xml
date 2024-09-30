@@ -55,8 +55,8 @@
 
         <ImageView
             android:id="@+id/ivDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_delete"
             android:contentDescription="Delete"/>

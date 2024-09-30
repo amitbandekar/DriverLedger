@@ -1,5 +1,6 @@
 package com.example.driverledger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,8 +15,11 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class OilChangeService extends Fragment {
 
@@ -24,6 +28,8 @@ public class OilChangeService extends Fragment {
     private Switch dieselFilterSwitch, breakOilSwitch, coolantSwitch;
     private Button submitButton;
     private DatabaseHelper databaseHelper;
+    int recordid =0;
+    int id =1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,6 +37,8 @@ public class OilChangeService extends Fragment {
 
         // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(getContext());
+
+
 
         // Initialize UI components
         vehicleNoEditText = view.findViewById(R.id.vehicleNoEditText);
@@ -48,6 +56,18 @@ public class OilChangeService extends Fragment {
         kmValidationText = view.findViewById(R.id.kmValidationText);
         remarkValidationText = view.findViewById(R.id.remarkValidationText);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            ArrayList<Bundle> bundleList = args.getParcelableArrayList("bundleList");
+            recordid = args.getInt("recordid");
+            id = args.getInt("id");
+            // Check if bundleList is null
+            if (bundleList != null) {
+                SetData(bundleList);
+            }
+        } else {
+            clearForm();
+        }
         // Submit Button
         submitButton = view.findViewById(R.id.submitButton);
 
@@ -122,17 +142,24 @@ public class OilChangeService extends Fragment {
 
         // Get current date
         String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        int id =0;
+
 
         // Insert data into the database
-        boolean isInserted = databaseHelper.saveOilChangeService(id,vehicleNo, modelName, currentDate, runningKm,  nextServiceKm, dieselFilterChange, breakOilChange, coolantChange, remark);
+        boolean isInserted = databaseHelper.saveOilChangeService(recordid,vehicleNo, modelName, currentDate, runningKm,  nextServiceKm, dieselFilterChange, breakOilChange, coolantChange, remark);
 
         if (isInserted) {
-            Toast.makeText(getContext(), "Data Saved Successfully", Toast.LENGTH_SHORT).show();
-            // Reset form fields after saving
-            clearForm();
+            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success")
+                    .setContentText("Data saved successfully")
+                    .show();
+            Intent intent = new Intent(getContext(), HomeScreen.class);
+            intent.putExtra("id", id);
+            startActivity(intent);
         } else {
-            Toast.makeText(getContext(), "Data Insertion Failed", Toast.LENGTH_SHORT).show();
+            new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error")
+                    .setContentText("Error saving data")
+                    .show();
         }
     }
 
@@ -146,5 +173,20 @@ public class OilChangeService extends Fragment {
         dieselFilterSwitch.setChecked(false);
         breakOilSwitch.setChecked(false);
         coolantSwitch.setChecked(false);
+    }
+    private void SetData(ArrayList<Bundle> bundleList) {
+        Bundle data = bundleList.get(0); // Assuming you need the first bundle from the list
+
+        // Set text fields with data from the bundle
+        vehicleNoEditText.setText(data.getString("vehicleNo", ""));
+        modelNameEditText.setText(data.getString("modelName", ""));
+        runningKmEditText.setText(data.getString("runningKm", ""));
+        nextServiceKmEditText.setText(data.getString("nextServiceKm", ""));
+        remarkEditText.setText(data.getString("remark", ""));
+
+        // Set switches based on "Yes" or "No" stored in the bundle
+        dieselFilterSwitch.setChecked("Yes".equals(data.getString("dieselFilterChange")));
+        breakOilSwitch.setChecked("Yes".equals(data.getString("breakOilChange")));
+        coolantSwitch.setChecked("Yes".equals(data.getString("coolantChange")));
     }
 }

@@ -23,6 +23,9 @@ import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,7 +36,7 @@ public class Login extends Fragment {
     private TextView usernameValidationText;
     private TextView passwordValidationText;
     private Button loginButton;
-    private ExecutorService executor;
+    private DatabaseHelper databaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,9 +47,6 @@ public class Login extends Fragment {
         usernameValidationText = view.findViewById(R.id.usernameValidationText);
         passwordValidationText = view.findViewById(R.id.passwordValidationText);
         loginButton = view.findViewById(R.id.loginButton);
-
-        // Initialize Executor for background tasks
-        executor = Executors.newSingleThreadExecutor();
 
         loginButton.setOnClickListener(v -> handleLogin());
 
@@ -74,53 +74,33 @@ public class Login extends Fragment {
         }
 
         if (isValid) {
-            executor.execute(() -> {
-                try {
-                    String response = ApiService.login(username, password);
-
-                    // Process the response in the UI thread
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String status = jsonResponse.getString("status");
-
-                            if ("login_success".equals(status)) {
-                                String authkey = jsonResponse.getString("authkey");
-                                SharedPreferences sharedPref = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("authkey", authkey);
-                                editor.apply();
-
-                                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
-                                        .setTitleText("Success")
-                                        .setContentText("Login successful!")
-                                        .setConfirmText("OK")
-                                        .setConfirmClickListener(sDialog -> {
-                                            sDialog.dismissWithAnimation();
-                                            Intent intent = new Intent(requireActivity(), HomeScreen.class);
-                                            startActivity(intent);
-                                            requireActivity().finish();
-                                        })
-                                        .show();
-                            } else {
-                                handleError("Invalid username or password.");
-                            }
-                        } catch (JSONException e) {
-                            handleError("Invalid response from the server.");
-                        }
-                    });
-                } catch (Exception e) {
-                    handleError("Error connecting to server.");
-                }
-            });
+            saveData();
         }
     }
 
-    private void handleError(String message) {
-        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("Error")
-                .setContentText(message)
-                .setConfirmText("OK")
-                .show();
+    private void saveData() {
+        String username = usernameEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+
+        // Insert data into the database
+        String isInserted = databaseHelper.Login(username,password);
+
+        if (isInserted=="") {
+            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success")
+                    .setContentText("Login SuccessFully")
+                    .show();
+            Intent intent = new Intent(getContext(), HomeScreen.class);
+            intent.putExtra("id", 1);
+            startActivity(intent);
+        } else {
+            new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error")
+                    .setContentText("Register First")
+                    .show();
+        }
     }
+
+
 }

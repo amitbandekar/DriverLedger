@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7C4A5">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vehicle Number"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/vehicleNoTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="KA01CD5678"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Model Name"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/modelNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Honda Civic"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Running KM"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/runningKmTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="50,000"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next Service KM"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/nextServiceKmTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="55,000"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Diesel Filter Changed"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/dieselFilterChangeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yes"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brake Oil Changed"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/breakOilChangeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yes"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coolant Changed"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/coolantChangeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remark"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/remarkTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Regular maintenance completed, coolant change recommended next service"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3F0D12"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#3F0D12"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/dateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="September 28, 2024 10:15:00"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

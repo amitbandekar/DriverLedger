@@ -1,5 +1,6 @@
 package com.example.driverledger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,11 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class TyerChange extends Fragment {
 
@@ -22,10 +26,11 @@ public class TyerChange extends Fragment {
     private Switch alignmentBalancingSwitch;
     private TextView vehicleNoValidationText, modelNameValidationText, tyreQtyValidationText, alignmentKmValidationText, remarkValidationText;
     private DatabaseHelper dbHelper;
-
+    int recordid =0;
+    int id =1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_oil_change_service, container, false);
+        View view = inflater.inflate(R.layout.fragment_tyer_change, container, false);
 
         // Initialize Views
         vehicleNoEditText = view.findViewById(R.id.vehicleNoEditText);
@@ -45,7 +50,18 @@ public class TyerChange extends Fragment {
 
         // Initialize Database Helper
         dbHelper = new DatabaseHelper(getContext());
-
+        Bundle args = getArguments();
+        if (args != null) {
+            ArrayList<Bundle> bundleList = args.getParcelableArrayList("bundleList");
+            recordid = args.getInt("recordid");
+            id = args.getInt("id");
+            // Check if bundleList is null
+            if (bundleList != null) {
+                SetData(bundleList);
+            }
+        } else {
+            clearForm();
+        }
         // Handle Submit Button
         Button submitButton = view.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(v -> saveTyreChangeData());
@@ -103,14 +119,47 @@ public class TyerChange extends Fragment {
             int alignmentKm = Integer.parseInt(alignmentKmStr);
             int nextAlignmentKm = Integer.parseInt(nextAlignmentKmStr);
             String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-            int id =0;
 
-            boolean isSaved = dbHelper.saveTyreChangeData(id,vehicleNo, modelName, tyreQty, alignmentBalancing, alignmentKm, nextAlignmentKm, remark,currentDateTime);
+            boolean isSaved = dbHelper.saveTyreChangeData(recordid,vehicleNo, modelName, tyreQty, alignmentBalancing, alignmentKm, nextAlignmentKm, remark,currentDateTime);
             if (isSaved) {
-                Toast.makeText(getContext(), "Data saved successfully", Toast.LENGTH_SHORT).show();
+                new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Success")
+                        .setContentText("Data saved successfully")
+                        .show();
+                Intent intent = new Intent(getContext(), HomeScreen.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
             } else {
-                Toast.makeText(getContext(), "Error saving data", Toast.LENGTH_SHORT).show();
+                new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Error")
+                        .setContentText("Error saving data")
+                        .show();
             }
         }
+    }
+    private void clearForm() {
+        vehicleNoEditText.setText("");
+        modelNameEditText.setText("");
+        tyreQtyEditText.setText("");
+        alignmentKmEditText.setText("");
+        nextAlignmentKmEditText.setText("");
+        remarkEditText.setText("");
+        alignmentBalancingSwitch.setChecked(false);
+
+    }
+    private void SetData(ArrayList<Bundle> bundleList) {
+        Bundle data = bundleList.get(0); // Assuming you need the first bundle from the list
+
+        // Set text fields with data from the bundle
+        vehicleNoEditText.setText(data.getString("vehicleNo", ""));
+        modelNameEditText.setText(data.getString("modelName", ""));
+        tyreQtyEditText.setText(data.getString("tyreQty", ""));
+        alignmentKmEditText.setText(data.getString("alignmentKm", ""));
+        remarkEditText.setText(data.getString("remark", ""));
+        nextAlignmentKmEditText.setText(data.getString("nextAlignmentKm", ""));
+
+        // Set switches based on "Yes" or "No" stored in the bundle
+        alignmentBalancingSwitch.setChecked("Yes".equals(data.getString("alignmentBalancing")));
+
     }
 }

@@ -37,26 +37,20 @@
             android:layout_marginTop="4dp"
             android:text="Details: Brake pad replacement"/>
 
-        <TextView
-            android:id="@+id/tvId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvDetails"
-            android:layout_marginTop="4dp"
-            android:text="ID: MAINT123"/>
+
 
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvId"
+            android:layout_below="@id/tvDetails"
             android:layout_marginTop="4dp"
             android:text="Date: 28-September-24"/>
 
         <ImageView
             android:id="@+id/ivDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_delete"
             android:contentDescription="Delete"/>

@@ -101,41 +101,6 @@ public class Register extends Fragment {
         }
 
         if (isValid) {
-            executor.execute(() -> {
-                try {
-                    // Make the API call for registration
-                    String response = ApiService.register(username, password, email); // Ensure ApiService has this method
-
-                    // Process the response in the UI thread
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String status = jsonResponse.getString("status");
-
-                            if ("registration_success".equals(status)) {
-                                // Successful registration
-                                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
-                                        .setTitleText("Success")
-                                        .setContentText("Registration successful!")
-                                        .setConfirmText("OK")
-                                        .setConfirmClickListener(sDialog -> {
-                                            sDialog.dismissWithAnimation();
-                                            // Optionally navigate to login or other activity
-                                        })
-                                        .show();
-                            } else if ("user_exists".equals(status)) {
-                                handleError("Username already exists. Try another.");
-                            } else {
-                                handleError("Registration failed. Try again.");
-                            }
-                        } catch (JSONException e) {
-                            handleError("Invalid server response.");
-                        }
-                    });
-                } catch (Exception e) {
-                    handleError("Error connecting to server.");
-                }
-            });
         }
     }
 

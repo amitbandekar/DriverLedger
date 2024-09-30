@@ -1,5 +1,6 @@
 package com.example.driverledger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,8 +14,11 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class OtherMaintenance extends Fragment {
 
@@ -22,6 +26,8 @@ public class OtherMaintenance extends Fragment {
     private TextView vehicleNoValidationText, modelNameValidationText, detailsValidationText;
     private Button submitButton;
     private DatabaseHelper databaseHelper;
+    int recordid =0;
+    int id =1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +35,8 @@ public class OtherMaintenance extends Fragment {
 
         // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(getContext());
+
+
 
         // Initialize UI components
         vehicleNoEditText = view.findViewById(R.id.vehicleNoEditText);
@@ -39,6 +47,18 @@ public class OtherMaintenance extends Fragment {
         detailsValidationText = view.findViewById(R.id.detailsValidationText);
         submitButton = view.findViewById(R.id.submitButton);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            ArrayList<Bundle> bundleList = args.getParcelableArrayList("bundleList");
+            recordid = args.getInt("recordid");
+            id = args.getInt("id");
+            // Check if bundleList is null
+            if (bundleList != null) {
+                SetData(bundleList);
+            }
+        } else {
+            clearForm();
+        }
         submitButton.setOnClickListener(v -> {
             if (validateForm()) {
                 saveData();
@@ -87,18 +107,38 @@ public class OtherMaintenance extends Fragment {
 
         // Get current date and time
         String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        int id =0;
         // Insert data into the database
-        boolean isInserted = databaseHelper.saveOtherMaintenanceData(id,vehicleNo, modelName, details, currentDateTime);
+        boolean isInserted = databaseHelper.saveOtherMaintenanceData(recordid,vehicleNo, modelName, details, currentDateTime);
 
         if (isInserted) {
-            Toast.makeText(getContext(), "Data Saved Successfully", Toast.LENGTH_SHORT).show();
-            // Reset form fields after saving
-            vehicleNoEditText.setText("");
-            modelNameEditText.setText("");
-            detailsEditText.setText("");
+            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success")
+                    .setContentText("Data saved successfully")
+                    .show();
+            Intent intent = new Intent(getContext(), HomeScreen.class);
+            intent.putExtra("id", id);
+            startActivity(intent);
         } else {
-            Toast.makeText(getContext(), "Data Insertion Failed", Toast.LENGTH_SHORT).show();
+            new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error")
+                    .setContentText("Error saving data")
+                    .show();
         }
+    }
+
+    private void clearForm() {
+        vehicleNoEditText.setText("");
+        modelNameEditText.setText("");
+        detailsEditText.setText("");
+
+    }
+    private void SetData(ArrayList<Bundle> bundleList) {
+        Bundle data = bundleList.get(0); // Assuming you need the first bundle from the list
+
+        // Set text fields with data from the bundle
+        vehicleNoEditText.setText(data.getString("vehicleNo", ""));
+        modelNameEditText.setText(data.getString("modelName", ""));
+        detailsEditText.setText(data.getString("runningKm", ""));
+
     }
 }

@@ -10,6 +10,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "DriverLedger.db";
 
     // Table Names
+    private static final String TABLE_USER = "tblUsers";
     private static final String TABLE_DRIVER_COMPLAINTS = "tblDriverComplaints";
     private static final String TABLE_SERVICING_DETAILS = "tblServicingDetails";
     private static final String TABLE_MAINTENANCE_DETAILS = "tblMaintenanceDetails";
@@ -23,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create tables
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_USER+" (id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT UNIQUE, username TEXT, password TEXT, email TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DRIVER_COMPLAINTS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, details TEXT, remarks TEXT, problemClosed INTEGER, currentDateTime TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SERVICING_DETAILS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, currentDateTime TEXT, runningKm INTEGER, nextServiceKm INTEGER, dieselFilterChange INTEGER, breakOilChange INTEGER, coolantChange INTEGER, remark TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MAINTENANCE_DETAILS + "(id INTEGER PRIMARY KEY, vehicleNo TEXT, modelName TEXT, details TEXT, currentDateTime TEXT)");
@@ -32,12 +34,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DRIVER_COMPLAINTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERVICING_DETAILS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MAINTENANCE_DETAILS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TYRE_REPAIRS);
         onCreate(db);
     }
+
+    // Register method
+    public String register(String username, String password, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        // Generate a unique user_key (UUID)
+        String userKey = java.util.UUID.randomUUID().toString();
+
+        // Put values including the generated key
+        contentValues.put("user_key", userKey);
+        contentValues.put("username", username);
+        contentValues.put("password", password);
+        contentValues.put("email", email);
+
+        long result = db.insert("tblUsers", null, contentValues);
+
+        // Return the generated key if successful
+        return result != -1 ? userKey : null;
+    }
+
+    // Login method
+    // Login method that returns user_key if successful
+    public String Login(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to find user with matching username and password
+        Cursor cursor = db.rawQuery("SELECT user_key FROM tblUsers WHERE username = ? AND password = ?", new String[]{username, password});
+
+        // If user exists, return the user_key
+        if (cursor.moveToFirst()) {
+            String userKey = cursor.getString(cursor.getColumnIndex("user_key"));
+            cursor.close();
+            return userKey;
+        } else {
+            cursor.close();
+            return null;
+        }
+    }
+
+
 
     // Method to insert or update driver complaints
     public boolean saveDriverComplaints(int id, String vehicleNo, String modelName, String details, String remarks, String problemClosed, String currentDateTime) {
@@ -148,6 +192,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int result = db.delete(tableName, "id = ?", new String[]{String.valueOf(id)});
         return result > 0;
     }
+
+
 
 }
 
