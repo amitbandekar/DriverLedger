@@ -1,6 +1,7 @@
 package com.example.driverledger;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -14,6 +15,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -89,11 +92,21 @@ public class HomeScreen extends AppCompatActivity {
         btnExportPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PDFHandler pdfExporter = new PDFHandler(HomeScreen.this);
-                pdfExporter.importDataFromPDF(TableNames[ViewId - 1], HomeScreen.this);
+                // Check if the required permission is granted
+                if (ContextCompat.checkSelfPermission(HomeScreen.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
 
+                    // Permission is not granted, show a permission dialog
+                    ActivityCompat.requestPermissions(HomeScreen.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    // Permission is granted, proceed with PDF export
+                    PDFHandler pdfExporter = new PDFHandler(HomeScreen.this);
+                    pdfExporter.importDataFromPDF(TableNames[ViewId - 1], HomeScreen.this);
+                }
             }
         });
+
         btnImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
