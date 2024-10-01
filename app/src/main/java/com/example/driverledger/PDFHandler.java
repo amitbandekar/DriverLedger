@@ -8,11 +8,17 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.driverledger.DatabaseHelper;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,12 +41,19 @@ public class PDFHandler {
         try {
             PdfWriter writer = new PdfWriter(pdfFile);
             PdfDocument pdfDocument = new PdfDocument(writer);
-            Table table = new Table(new float[]{1, 2, 2, 2, 2, 2}); // Adjust the number of columns as needed
+            Document document = new Document(pdfDocument);
 
             // Set column headers based on the table name
             String[] headers = getColumnHeaders(tableName);
+            float[] columnWidths = new float[headers.length];
+            for (int i = 0; i < headers.length; i++) {
+                columnWidths[i] = 1; // Customize column widths if necessary
+            }
+            Table table = new Table(columnWidths);
+
+            PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
             for (String header : headers) {
-                table.addHeaderCell(new Cell().add(header));
+                table.addHeaderCell(new Cell().add(new Paragraph(header).setFont(font)));
             }
 
             // Fetch data from the database
@@ -48,12 +61,13 @@ public class PDFHandler {
             Cursor cursor = db.rawQuery("SELECT * FROM " + tableName, null);
             while (cursor.moveToNext()) {
                 for (int i = 1; i < cursor.getColumnCount(); i++) { // Skip 'id'
-                    table.addCell(new Cell().add(cursor.getString(i)));
+                    table.addCell(new Cell().add(new Paragraph(cursor.getString(i)).setFont(font)));
                 }
             }
             cursor.close();
 
-            pdfDocument.add(table);
+            document.add(table);
+            document.close();
             pdfDocument.close();
             Toast.makeText(context, "Data exported successfully to PDF.", Toast.LENGTH_SHORT).show();
 
@@ -77,39 +91,11 @@ public class PDFHandler {
             PdfReader pdfReader = new PdfReader(pdfFile);
             PdfDocument pdfDocument = new PdfDocument(pdfReader);
 
-            // Read the first page (assuming data is on the first page)
-            Table table = pdfDocument.getPage(1).getTable(0);
-            int rowCount = table.getNumberOfRows();
+            // PDF reading logic should be added based on table structure or format
+            // (Note: iText 7 doesn't have direct table extraction methods, so custom logic is needed)
 
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.beginTransaction();
-
-            try {
-                // Prepare column mapping for insertion
-                Map<String, String> columnMapping = getColumnMapping(tableName);
-                int columnCount = table.getNumberOfColumns();
-
-                // Read the table data from the PDF
-                for (int i = 1; i < rowCount; i++) { // Start from 1 to skip header
-                    String[] rowData = new String[columnCount - 1]; // Skip 'id'
-
-                    for (int j = 0; j < columnCount; j++) {
-                        String header = table.getCell(0, j).getText(); // Get the header from the first row
-                        if (!header.equalsIgnoreCase("id")) {
-                            Cell cell = table.getCell(i, j);
-                            rowData[j] = cell.getText();
-                        }
-                    }
-
-                    // Insert data into the corresponding table
-                    insertDataIntoTable(db, tableName, rowData, columnMapping);
-                }
-                db.setTransactionSuccessful();
-                Toast.makeText(context, "Data imported successfully.", Toast.LENGTH_SHORT).show();
-            } finally {
-                db.endTransaction();
-                pdfDocument.close();
-            }
+            pdfReader.close();
+            pdfDocument.close();
 
         } catch (SQLiteException e) {
             e.printStackTrace();
@@ -118,80 +104,6 @@ public class PDFHandler {
             e.printStackTrace();
             Toast.makeText(context, "Error reading PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void insertDataIntoTable(SQLiteDatabase db, String tableName, String[] rowData, Map<String, String> columnMapping) {
-        StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
-
-        for (String column : columnMapping.keySet()) {
-            if (!column.equalsIgnoreCase("id")) {
-                query.append(column).append(", ");
-            }
-        }
-
-        // Remove the last comma and space
-        query.setLength(query.length() - 2);
-        query.append(") VALUES (");
-
-        for (String value : rowData) {
-            query.append("'").append(value).append("', ");
-        }
-
-        // Remove the last comma and space
-        query.setLength(query.length() - 2);
-        query.append(");");
-
-        db.execSQL(query.toString());
-    }
-
-    private Map<String, String> getColumnMapping(String tableName) {
-        Map<String, String> columnMapping = new HashMap<>();
-
-        switch (tableName) {
-            case "TABLE_DRIVER_COMPLAINTS":
-                columnMapping.put("vehicleNo", "Vehicle Number");
-                columnMapping.put("modelName", "Model Name");
-                columnMapping.put("details", "Complaint Details");
-                columnMapping.put("remarks", "Remarks");
-                columnMapping.put("problemClosed", "Problem Closed");
-                columnMapping.put("currentDateTime", "Date and Time");
-                break;
-
-            case "TABLE_SERVICING_DETAILS":
-                columnMapping.put("vehicleNo", "Vehicle Number");
-                columnMapping.put("modelName", "Model Name");
-                columnMapping.put("currentDateTime", "Service Date and Time");
-                columnMapping.put("runningKm", "Running KM");
-                columnMapping.put("nextServiceKm", "Next Service KM");
-                columnMapping.put("dieselFilterChange", "Diesel Filter Change");
-                columnMapping.put("breakOilChange", "Brake Oil Change");
-                columnMapping.put("coolantChange", "Coolant Change");
-                columnMapping.put("remark", "Remarks");
-                break;
-
-            case "TABLE_MAINTENANCE_DETAILS":
-                columnMapping.put("vehicleNo", "Vehicle Number");
-                columnMapping.put("modelName", "Model Name");
-                columnMapping.put("details", "Maintenance Details");
-                columnMapping.put("currentDateTime", "Date and Time");
-                break;
-
-            case "TABLE_TYRE_REPAIRS":
-                columnMapping.put("vehicleNo", "Vehicle Number");
-                columnMapping.put("modelName", "Model Name");
-                columnMapping.put("tyreQty", "Tyre Quantity");
-                columnMapping.put("alignmentBalancing", "Alignment and Balancing");
-                columnMapping.put("alignmentKm", "Alignment KM");
-                columnMapping.put("nextAlignmentKm", "Next Alignment KM");
-                columnMapping.put("remark", "Remarks");
-                columnMapping.put("currentDateTime", "Date and Time");
-                break;
-
-            default:
-                throw new IllegalArgumentException("Invalid table name: " + tableName);
-        }
-
-        return columnMapping;
     }
 
     private String[] getColumnHeaders(String tableName) {

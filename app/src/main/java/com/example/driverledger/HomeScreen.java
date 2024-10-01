@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -22,6 +23,7 @@ public class HomeScreen extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private static final String[] TableNames = { "tblServicingDetails", "tblMaintenanceDetails", "tblTyreRepairs", "tblDriverComplaints" };
     int ViewId = 1;
+    private TextView HeadingText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class HomeScreen extends AppCompatActivity {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         ImageView addnew = findViewById(R.id.addIcon);
         ImageView btnExportPdf = findViewById(R.id.btnExportPdf);
+        HeadingText = findViewById(R.id.titleTextView);
+        ImageView btnImport = findViewById(R.id.btnImportPdf);
 
         ViewId = getIntent().getIntExtra("id", 1);
         // Load the default fragment (Driver Details)
@@ -45,18 +49,22 @@ public class HomeScreen extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_oil_change:
                         fragment = new ListView();
+                        HeadingText.setText("Oil Change");
                         ViewId = 1;
                         break;
                     case R.id.nav_maintenance:
                         fragment = new ListView();
+                        HeadingText.setText("Other Maintainance");
                         ViewId = 2;
                         break;
                     case R.id.nav_tyre_change:
                         fragment = new ListView();
+                        HeadingText.setText("Tyer Change");
                         ViewId = 3;
                         break;
                     case R.id.nav_driver_complaints:
                         fragment = new ListView();
+                        HeadingText.setText("Driver Complaints");
                         ViewId = 4;
                         break;
                 }
@@ -69,14 +77,14 @@ public class HomeScreen extends AppCompatActivity {
         });
 
 
-        addnew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        addnew.setOnClickListener(v -> {
 
-                Intent intent = new Intent(HomeScreen.this, AddNew.class);
-                intent.putExtra("id", ViewId);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(HomeScreen.this, AddNew.class);
+            intent.putExtra("id", ViewId);              // Pass the id
+            intent.putExtra("recordId", 0);             // Pass recordId as 0
+            intent.putParcelableArrayListExtra("dataList", null);  // Pass bundleList as null
+            startActivity(intent);
+
         });
         btnExportPdf.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +94,7 @@ public class HomeScreen extends AppCompatActivity {
 
             }
         });
-        btnExportPdf.setOnClickListener(new View.OnClickListener() {
+        btnImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PDFHandler pdfExporter = new PDFHandler(HomeScreen.this);

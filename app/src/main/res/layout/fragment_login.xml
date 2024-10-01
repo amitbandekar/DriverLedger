@@ -108,6 +108,5 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:padding="8dp"
-        android:onClick="onRegisterTextViewClick"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>

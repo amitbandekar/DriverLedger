@@ -1,10 +1,10 @@
 package com.example.driverledger;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -15,9 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,6 +34,7 @@ public class Register extends Fragment {
     private TextView passwordValidationText;
     private TextView confirmPasswordValidationText;
     private Button registerButton;
+    DatabaseHelper databaseHelper;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -53,10 +53,19 @@ public class Register extends Fragment {
         passwordValidationText = view.findViewById(R.id.passwordValidationText);
         confirmPasswordValidationText = view.findViewById(R.id.confirmPasswordValidationText);
         registerButton = view.findViewById(R.id.registerButton);
+        databaseHelper = new DatabaseHelper(getContext());
 
         // Set click listener for the register button
         registerButton.setOnClickListener(v -> handleRegister());
 
+        TextView loginTextView = view.findViewById(R.id.loginTextView);
+        loginTextView.setOnClickListener(v -> {
+            // Open the Register fragment
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.LoginRegister, new Login());
+            transaction.addToBackStack(null); // Add to back stack so user can navigate back
+            transaction.commit();
+        });
         return view;
     }
 
@@ -101,14 +110,42 @@ public class Register extends Fragment {
         }
 
         if (isValid) {
+            handleRegister(username,password,email);
         }
     }
 
-    private void handleError(String message) {
-        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("Error")
-                .setContentText(message)
-                .setConfirmText("OK")
-                .show();
+
+    private void handleRegister(String username, String password, String email) {
+        // Call the register method
+        String userKey = databaseHelper.register(username, password, email);
+
+        if (userKey != null) {
+            // Registration successful, use the userKey
+            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("userKey", userKey);
+            editor.apply();
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success")
+                    .setContentText("Registration successful!")
+                    .setConfirmText("OK")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            // Redirect to next activity or main screen
+                            Intent intent = new Intent(getContext(), HomeScreen.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        } else {
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error")
+                    .setContentText("Registration Failed")
+                    .setConfirmText("OK")
+                    .show();
+        }
     }
+
 }

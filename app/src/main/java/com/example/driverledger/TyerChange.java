@@ -122,7 +122,7 @@ public class TyerChange extends Fragment {
 
             boolean isSaved = dbHelper.saveTyreChangeData(recordid,vehicleNo, modelName, tyreQty, alignmentBalancing, alignmentKm, nextAlignmentKm, remark,currentDateTime);
             if (isSaved) {
-                new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Success")
                         .setContentText("Data saved successfully")
                         .show();
@@ -130,7 +130,7 @@ public class TyerChange extends Fragment {
                 intent.putExtra("id", id);
                 startActivity(intent);
             } else {
-                new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Error")
                         .setContentText("Error saving data")
                         .show();

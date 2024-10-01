@@ -111,7 +111,7 @@ public class OtherMaintenance extends Fragment {
         boolean isInserted = databaseHelper.saveOtherMaintenanceData(recordid,vehicleNo, modelName, details, currentDateTime);
 
         if (isInserted) {
-            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Success")
                     .setContentText("Data saved successfully")
                     .show();
@@ -119,7 +119,7 @@ public class OtherMaintenance extends Fragment {
             intent.putExtra("id", id);
             startActivity(intent);
         } else {
-            new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Error")
                     .setContentText("Error saving data")
                     .show();

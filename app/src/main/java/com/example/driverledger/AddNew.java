@@ -20,56 +20,56 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AddNew extends AppCompatActivity {
-
+    int RecordId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_new); // Ensure the correct layout is set here
+
         EdgeToEdge.enable(this);
         // Get the passed id from the intent
         int id = getIntent().getIntExtra("id", 1);
-        int RecordId = getIntent().getIntExtra("recordId", 1);
+        RecordId= getIntent().getIntExtra("recordId", 0);
         // Default is -1 if id is not passed
         ArrayList<Bundle> bundleList = getIntent().getParcelableArrayListExtra("dataList");
         // Default is -1 if id is not passed
 
+        // Inside your current activity
+        ImageView btnBacktoHome = findViewById(R.id.btnBacktoHome);
+
+        btnBacktoHome.setOnClickListener(v -> {
+
+            Intent intent = new Intent(AddNew.this, HomeScreen.class);
+            intent.putExtra("id", id);
+            startActivity(intent);
+        });
+
         // Based on the id, load the appropriate fragment
         if (id == 1) {
-            loadFragment(new OilChangeService(),bundleList,id, RecordId);
+            loadFragment(new OilChangeService(),bundleList,id);
         } else if (id == 2) {
-            loadFragment(new OtherMaintenance(),bundleList,id, RecordId);
+            loadFragment(new OtherMaintenance(),bundleList,id);
         }else if (id == 3) {
-            loadFragment(new TyerChange(),bundleList,id, RecordId);
+            loadFragment(new TyerChange(),bundleList,id);
         }else if (id == 4) {
-            loadFragment(new DriverComplaints(),bundleList,id, RecordId);
+            loadFragment(new DriverComplaints(),bundleList,id);
         }
 
 
-        // Inside your current activity
-        ImageView btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(AddNew.this, HomeScreen.class);
-                intent.putExtra("id", id);
-                startActivity(intent);
-            }
-        });
 
 
     }
-    private void loadFragment(Fragment fragment, ArrayList<Bundle> bundleList,int id,int recordid) {
+    private void loadFragment(Fragment fragment, ArrayList<Bundle> bundleList,int id) {
         Bundle args = new Bundle();
         args.putInt("id",id);
-        args.putInt("recordid",recordid);
+        args.putInt("recordid",RecordId);
         args.putParcelableArrayList("bundleList", bundleList);
         fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        // R.id.fragment_container is the FrameLayout where fragment will be loaded
-        fragmentTransaction.commit();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.addNew_fragment_container, fragment)
+                .commit();
     }
 }

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -50,6 +51,14 @@ public class Login extends Fragment {
 
         loginButton.setOnClickListener(v -> handleLogin());
 
+        TextView registerTextView = view.findViewById(R.id.registerTextView);
+        registerTextView.setOnClickListener(v -> {
+            // Open the Register fragment
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.LoginRegister, new Register());
+            transaction.addToBackStack(null); // Add to back stack so user can navigate back
+            transaction.commit();
+        });
         return view;
     }
 
@@ -84,13 +93,18 @@ public class Login extends Fragment {
 
 
         // Insert data into the database
-        String isInserted = databaseHelper.Login(username,password);
+        String userKey = databaseHelper.Login(username,password);
 
-        if (isInserted=="") {
+        if (userKey != null) {
             new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Success")
                     .setContentText("Login SuccessFully")
                     .show();
+            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("userKey", userKey);
+            editor.apply();
+
             Intent intent = new Intent(getContext(), HomeScreen.class);
             intent.putExtra("id", 1);
             startActivity(intent);

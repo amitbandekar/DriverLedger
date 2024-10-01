@@ -64,9 +64,9 @@ public class OilChangeService extends Fragment {
             // Check if bundleList is null
             if (bundleList != null) {
                 SetData(bundleList);
+            } else {
+                clearForm();
             }
-        } else {
-            clearForm();
         }
         // Submit Button
         submitButton = view.findViewById(R.id.submitButton);
@@ -148,7 +148,7 @@ public class OilChangeService extends Fragment {
         boolean isInserted = databaseHelper.saveOilChangeService(recordid,vehicleNo, modelName, currentDate, runningKm,  nextServiceKm, dieselFilterChange, breakOilChange, coolantChange, remark);
 
         if (isInserted) {
-            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Success")
                     .setContentText("Data saved successfully")
                     .show();
@@ -156,7 +156,7 @@ public class OilChangeService extends Fragment {
             intent.putExtra("id", id);
             startActivity(intent);
         } else {
-            new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Error")
                     .setContentText("Error saving data")
                     .show();

@@ -10,20 +10,19 @@
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_alignParentTop="true"
-        android:background="#3F0D12"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:background="#3F0D12"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true">
 
         <!-- Back Button -->
         <ImageView
-            android:id="@+id/btnBack"
+            android:id="@+id/btnBacktoHome"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="Back"
-            android:onClick="GoHomeFromEditOrNew"
             android:padding="2dp"
             android:src="@drawable/backbutton" />
 
@@ -45,18 +44,12 @@
 
     </LinearLayout>
 
-
     <!-- Fragment Container -->
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/addNew_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:layout_below="@id/headerLayout"
-        android:background="#F7C4A5"/>
-
-
-
-
+        android:background="#F7C4A5" />
 
 </RelativeLayout>
