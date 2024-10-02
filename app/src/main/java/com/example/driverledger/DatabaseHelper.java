@@ -72,14 +72,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // If user exists, return the user_key
         if (cursor.moveToFirst()) {
-            String userKey = cursor.getString(cursor.getColumnIndex("user_key"));
-            cursor.close();
-            return userKey;
-        } else {
-            cursor.close();
-            return null;
+            int userKeyIndex = cursor.getColumnIndex("user_key");
+
+            // Check if the column index is valid
+            if (userKeyIndex >= 0) {
+                String userKey = cursor.getString(userKeyIndex);
+                cursor.close();
+                return userKey;
+            }
         }
+
+        cursor.close();
+        return null;
     }
+
 
 
 
@@ -184,6 +190,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getDataById(String tableName, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + tableName + " WHERE id = ?", new String[]{String.valueOf(id)});
+    }
+    public Cursor getUserData( String key) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE user_key = ?", new String[]{String.valueOf(key)});
     }
 
     // Method to delete a record by ID from any table

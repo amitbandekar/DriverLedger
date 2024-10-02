@@ -1,10 +1,13 @@
 package com.example.driverledger;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ListView extends Fragment {
     private DatabaseHelper databaseHelper;
+    private static final String[] TableNames = { "tblServicingDetails", "tblMaintenanceDetails", "tblTyreRepairs", "tblDriverComplaints" };
 
     private LinearLayout cardListLayout;
     private ImageView loadingImageView;
@@ -76,8 +80,23 @@ public class ListView extends Fragment {
                                         public void onClick(SweetAlertDialog sDialog) {
                                             sDialog.dismissWithAnimation();
                                             // Handle the delete action, for example: deleteItem();
-                                            databaseHelper.DeleteRecordById("tblServicingDetails",recordId);
-                                        }
+                                            boolean success = databaseHelper.DeleteRecordById(TableNames[viewId-1],recordId);
+                                            if (success) {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                                        .setTitleText("Success!")
+                                                        .setContentText("Record deleted successfully!")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+
+                                            } else {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                                                        .setTitleText("Error!")
+                                                        .setContentText("Failed to delete the record.")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+                                            }                                        }
                                     })
                                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
@@ -136,8 +155,26 @@ public class ListView extends Fragment {
                                         public void onClick(SweetAlertDialog sDialog) {
                                             sDialog.dismissWithAnimation();
                                             // Handle the delete action, for example: deleteItem();
-                                            databaseHelper.DeleteRecordById("tblMaintenanceDetails",recordId);
-                                        }
+                                            boolean success = databaseHelper.DeleteRecordById(TableNames[viewId-1],recordId);
+                                            if (success) {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                                        .setTitleText("Success!")
+                                                        .setContentText("Record deleted successfully!")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> {
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            // Refresh the current fragment
+                                                            refreshFragment();
+                                                        })
+                                                        .show();
+                                            } else {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                                                        .setTitleText("Error!")
+                                                        .setContentText("Failed to delete the record.")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+                                            }                                        }
                                     })
                                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
@@ -155,7 +192,7 @@ public class ListView extends Fragment {
 
                             // Start new activity and pass the id
                             Intent intent = new Intent(requireContext(), ViewData.class);
-                            intent.putExtra("viewId", viewId);
+                            intent.putExtra("id", viewId);
                             intent.putExtra("recordId", recordId);
                             startActivity(intent);
                         });
@@ -199,8 +236,23 @@ public class ListView extends Fragment {
                                         public void onClick(SweetAlertDialog sDialog) {
                                             sDialog.dismissWithAnimation();
                                             // Handle the delete action, for example: deleteItem();
-                                            databaseHelper.DeleteRecordById("tblTyreRepairs",recordId);
-                                        }
+                                            boolean success = databaseHelper.DeleteRecordById(TableNames[viewId-1],recordId);
+                                            if (success) {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                                        .setTitleText("Success!")
+                                                        .setContentText("Record deleted successfully!")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+
+                                            } else {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                                                        .setTitleText("Error!")
+                                                        .setContentText("Failed to delete the record.")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+                                            }                                        }
                                     })
                                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
@@ -218,7 +270,7 @@ public class ListView extends Fragment {
 
                             // Start new activity and pass the id
                             Intent intent = new Intent(requireContext(), ViewData.class);
-                            intent.putExtra("viewId", viewId);
+                            intent.putExtra("id", viewId);
                             intent.putExtra("recordId", recordId);
                             startActivity(intent);
                         });
@@ -262,7 +314,23 @@ public class ListView extends Fragment {
                                         public void onClick(SweetAlertDialog sDialog) {
                                             sDialog.dismissWithAnimation();
                                             // Handle the delete action, for example: deleteItem();
-                                            databaseHelper.DeleteRecordById("tblDriverComplaints",recordId);
+                                           boolean success = databaseHelper.DeleteRecordById(TableNames[viewId-1],recordId);
+                                            if (success) {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                                        .setTitleText("Success!")
+                                                        .setContentText("Record deleted successfully!")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+
+                                            } else {
+                                                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                                                        .setTitleText("Error!")
+                                                        .setContentText("Failed to delete the record.")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .show();
+                                            }
                                         }
                                     })
                                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -280,7 +348,7 @@ public class ListView extends Fragment {
 
                             // Start new activity and pass the id
                             Intent intent = new Intent(requireContext(), ViewData.class);
-                            intent.putExtra("viewId", viewId);
+                            intent.putExtra("id", viewId);
                             intent.putExtra("recordId", recordId);
                             startActivity(intent);
                         });
@@ -290,6 +358,8 @@ public class ListView extends Fragment {
 
 
                 }
+                loadingImageView.setVisibility(View.GONE);
+                noRecordsTextView.setVisibility(View.GONE);
             }
             else {
                 loadingImageView.setVisibility(View.GONE);
@@ -298,6 +368,15 @@ public class ListView extends Fragment {
         }
 
         return rootView;
+    }
+    private void refreshFragment() {
+        Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.fragment_container); // Update with your actual fragment container ID
+        if (currentFragment != null) {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.detach(currentFragment); // Detach the current fragment
+            transaction.attach(currentFragment); // Reattach to refresh
+            transaction.commit();
+        }
     }
 }
 

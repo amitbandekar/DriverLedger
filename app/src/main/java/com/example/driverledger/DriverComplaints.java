@@ -120,7 +120,7 @@ public class DriverComplaints extends Fragment {
         String problemClosed = problemCloseSwitch.isChecked() ? "Yes" :"No";
 
         // Get current date and time
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String currentDateTime  = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault()).format(new Date());
         // Insert data into the database
         boolean isInserted = databaseHelper.saveDriverComplaints(recordid,vehicleNo, modelName, details, remarks, problemClosed, currentDateTime);
 

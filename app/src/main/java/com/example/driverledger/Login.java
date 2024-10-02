@@ -91,12 +91,13 @@ public class Login extends Fragment {
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
+        databaseHelper = new DatabaseHelper(requireContext());
 
         // Insert data into the database
         String userKey = databaseHelper.Login(username,password);
 
         if (userKey != null) {
-            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Success")
                     .setContentText("Login SuccessFully")
                     .show();

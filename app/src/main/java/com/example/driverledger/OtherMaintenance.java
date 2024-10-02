@@ -106,7 +106,7 @@ public class OtherMaintenance extends Fragment {
         String details = detailsEditText.getText().toString().trim();
 
         // Get current date and time
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String currentDateTime  = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault()).format(new Date());
         // Insert data into the database
         boolean isInserted = databaseHelper.saveOtherMaintenanceData(recordid,vehicleNo, modelName, details, currentDateTime);
 
@@ -138,7 +138,7 @@ public class OtherMaintenance extends Fragment {
         // Set text fields with data from the bundle
         vehicleNoEditText.setText(data.getString("vehicleNo", ""));
         modelNameEditText.setText(data.getString("modelName", ""));
-        detailsEditText.setText(data.getString("runningKm", ""));
+        detailsEditText.setText(data.getString("details", ""));
 
     }
 }

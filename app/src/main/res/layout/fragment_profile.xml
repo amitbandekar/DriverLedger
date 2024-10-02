@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F7C4A5">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="150dp"
+        android:gravity="center"
+        android:padding="20dp">
+
+        <!-- Username Initials Placeholder -->
+        <TextView
+            android:id="@+id/usernameInitials"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="WS"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:background="@drawable/circle_background"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Username Display -->
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="William Smith"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Email Display -->
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="William@gmail.com"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="30dp" />
+
+        <!-- Buttons for Delete Account and Logout -->
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="50dp">
+
+            <!-- Logout Button -->
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:backgroundTint="@android:color/holo_blue_dark"
+                android:padding="10dp"
+                android:text="Logout"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

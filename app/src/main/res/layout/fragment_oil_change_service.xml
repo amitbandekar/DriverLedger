@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F7C4A5">
 
-    <!-- Header Layout with Dark Background -->
-
     <!-- Scrollable Content -->
     <ScrollView
         android:layout_width="match_parent"
@@ -70,40 +68,12 @@
                 android:textSize="14sp"
                 android:visibility="gone"/>
 
-            <!-- Date Input using DatePicker -->
-            <EditText
-                android:id="@+id/dateEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/modelNameValidationText"
-                android:layout_marginTop="20dp"
-                android:hint="Date"
-                android:padding="16dp"
-                android:background="@drawable/filled_edit_text"
-                android:inputType="none"
-                android:focusable="false"
-                android:clickable="true"
-                android:textColor="#333333"
-                android:textColorHint="#888888"/>
-
-            <!-- Date Validation Text -->
-            <TextView
-                android:id="@+id/dateValidationText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/dateEditText"
-                android:layout_marginTop="5dp"
-                android:text="Please select a valid date"
-                android:textColor="#FF0000"
-                android:textSize="14sp"
-                android:visibility="gone"/>
-
             <!-- Running KM and Next Service KM in same line -->
             <LinearLayout
                 android:id="@+id/kmLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/dateValidationText"
+                android:layout_below="@id/modelNameValidationText"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 

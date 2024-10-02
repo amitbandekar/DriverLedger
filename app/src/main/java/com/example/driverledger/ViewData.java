@@ -25,21 +25,16 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_view_data);
+        Intent intent = getIntent();
 
+        RecordId = intent.getIntExtra("recordId", -1);
+        id = getIntent().getIntExtra("id", 1);
+                                                                // Use a default value if not found
         databaseHelper = new DatabaseHelper(this);
         Cursor cursor = databaseHelper.getDataById(TableNames[id - 1],RecordId); // Adjust index
 
         ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
 
-        // Create an ArrayList of Bundles
-        ArrayList<Bundle> bundleList = new ArrayList<>();
-        for (HashMap<String, String> map : dataList) {
-            Bundle bundle = new Bundle();
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                bundle.putString(entry.getKey(), entry.getValue());
-            }
-            bundleList.add(bundle);
-        }
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -52,8 +47,17 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
                 dataList.add(dataMap);
             } while (cursor.moveToNext());
         }
-        id = getIntent().getIntExtra("id", 1);
-        RecordId = getIntent().getIntExtra("recordId", 1);
+        // Retrieve the RecordId from the Intent
+        // Create an ArrayList of Bundles
+        ArrayList<Bundle> bundleList = new ArrayList<>();
+        for (HashMap<String, String> map : dataList) {
+            Bundle bundle = new Bundle();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                bundle.putString(entry.getKey(), entry.getValue());
+            }
+            bundleList.add(bundle);
+        }
+
         // Based on the id, load the appropriate fragment
         if (id == 1) {
             loadFragment(new View_Servicingdetails(),id,RecordId,dataList);
@@ -70,12 +74,18 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(ViewData.this, HomeScreen.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
+
+                // Apply transition animation (enter from right, exit to left)
+                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+
+                // Finish the current activity
+                finish();
             }
         });
+
         ImageView btnEdit = findViewById(R.id.btnEdit);
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +94,7 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
 
                 Intent intent = new Intent(ViewData.this, AddNew.class);
                 intent.putExtra("id", id);
-                intent.putExtra("recordid", RecordId);
+                intent.putExtra("recordId", RecordId);
                 intent.putParcelableArrayListExtra("dataList", bundleList);
                 startActivity(intent);
             }

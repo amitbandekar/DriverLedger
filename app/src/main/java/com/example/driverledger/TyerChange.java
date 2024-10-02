@@ -118,7 +118,7 @@ public class TyerChange extends Fragment {
             int tyreQty = Integer.parseInt(tyreQtyStr);
             int alignmentKm = Integer.parseInt(alignmentKmStr);
             int nextAlignmentKm = Integer.parseInt(nextAlignmentKmStr);
-            String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+            String currentDateTime  = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault()).format(new Date());
 
             boolean isSaved = dbHelper.saveTyreChangeData(recordid,vehicleNo, modelName, tyreQty, alignmentBalancing, alignmentKm, nextAlignmentKm, remark,currentDateTime);
             if (isSaved) {

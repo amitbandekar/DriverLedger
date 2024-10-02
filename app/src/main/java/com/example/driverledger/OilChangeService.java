@@ -24,7 +24,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class OilChangeService extends Fragment {
 
     private EditText vehicleNoEditText, modelNameEditText, runningKmEditText, nextServiceKmEditText, remarkEditText;
-    private TextView vehicleNoValidationText, modelNameValidationText, kmValidationText, nextServiceKmValidationText, remarkValidationText;
+    private TextView vehicleNoValidationText, modelNameValidationText, kmValidationText, remarkValidationText;
     private Switch dieselFilterSwitch, breakOilSwitch, coolantSwitch;
     private Button submitButton;
     private DatabaseHelper databaseHelper;
@@ -37,9 +37,6 @@ public class OilChangeService extends Fragment {
 
         // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(getContext());
-
-
-
         // Initialize UI components
         vehicleNoEditText = view.findViewById(R.id.vehicleNoEditText);
         modelNameEditText = view.findViewById(R.id.modelNameEditText);
@@ -62,7 +59,7 @@ public class OilChangeService extends Fragment {
             recordid = args.getInt("recordid");
             id = args.getInt("id");
             // Check if bundleList is null
-            if (bundleList != null) {
+            if (bundleList != null&&bundleList.size()!=0) {
                 SetData(bundleList);
             } else {
                 clearForm();
@@ -101,20 +98,14 @@ public class OilChangeService extends Fragment {
             modelNameValidationText.setVisibility(View.GONE);
         }
 
-        // Validate Running KM
-        if (TextUtils.isEmpty(kmValidationText.getText().toString().trim())) {
+
+
+        // Validate Next Service KM
+        if (TextUtils.isEmpty(nextServiceKmEditText.getText().toString().trim())||TextUtils.isEmpty(runningKmEditText.getText().toString().trim())) {
             kmValidationText.setVisibility(View.VISIBLE);
             isValid = false;
         } else {
             kmValidationText.setVisibility(View.GONE);
-        }
-
-        // Validate Next Service KM
-        if (TextUtils.isEmpty(nextServiceKmEditText.getText().toString().trim())||TextUtils.isEmpty(runningKmEditText.getText().toString().trim())) {
-            nextServiceKmValidationText.setVisibility(View.VISIBLE);
-            isValid = false;
-        } else {
-            nextServiceKmValidationText.setVisibility(View.GONE);
         }
 
         // Validate Remark
@@ -141,7 +132,7 @@ public class OilChangeService extends Fragment {
         String coolantChange = coolantSwitch.isChecked() ?"Yes":"No";
 
         // Get current date
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String currentDate  = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault()).format(new Date());
 
 
         // Insert data into the database
