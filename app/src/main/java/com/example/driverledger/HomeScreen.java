@@ -2,7 +2,6 @@ package com.example.driverledger;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,20 +19,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class HomeScreen extends AppCompatActivity {
-    private DatabaseHelper databaseHelper;
     private static final String[] TableNames = { "tblServicingDetails", "tblMaintenanceDetails", "tblTyreRepairs", "tblDriverComplaints" };
     int ViewId = 1;
     private static final int PICK_PDF_REQUEST = 1; // Define your request code here
@@ -53,8 +44,6 @@ public class HomeScreen extends AppCompatActivity {
 
         pdfHandler = new PDFHandler(this); // Initialize PDFHandler with context
 
-        databaseHelper = new DatabaseHelper(this); // Correct context
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         addnew = findViewById(R.id.addIcon);
         btnExportPdf = findViewById(R.id.btnExportPdf);
         HeadingText = findViewById(R.id.titleTextView);
@@ -64,6 +53,17 @@ public class HomeScreen extends AppCompatActivity {
         setupViewPager();
         setupBottomNavigation();
         handleIncomingIntent();
+
+        addnew.setOnClickListener(v -> {
+
+            Intent intent = new Intent(HomeScreen.this, AddNew.class);
+            intent.putExtra("id", ViewId);              // Pass the id
+            intent.putExtra("recordId", 0);             // Pass recordId as 0
+            intent.putParcelableArrayListExtra("dataList", null);  // Pass bundleList as null
+            startActivity(intent);
+
+        });
+
         btnExportPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,15 +98,7 @@ public class HomeScreen extends AppCompatActivity {
                 }
             }
         });
-        addnew.setOnClickListener(v -> {
 
-            Intent intent = new Intent(HomeScreen.this, AddNew.class);
-            intent.putExtra("id", ViewId);              // Pass the id
-            intent.putExtra("recordId", 0);             // Pass recordId as 0
-            intent.putParcelableArrayListExtra("dataList", null);  // Pass bundleList as null
-            startActivity(intent);
-
-        });
 
         btnImport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +137,8 @@ public class HomeScreen extends AppCompatActivity {
     }
     private void handleIncomingIntent() {
         if (getIntent() != null) {
-            int viewId = getIntent().getIntExtra("id", 1);
-            navigateToPage(viewId);
+            ViewId = getIntent().getIntExtra("id", 1);
+            navigateToPage(ViewId);
         }
     }
     private void navigateToPage(int viewId) {
@@ -249,18 +241,23 @@ public class HomeScreen extends AppCompatActivity {
         switch (position) {
             case 0:
                 HeadingText.setText("Oil Change");
+                ViewId =1;
                 break;
             case 1:
                 HeadingText.setText("Other Maintainance");
+                ViewId =2;
                 break;
             case 2:
                 HeadingText.setText("Tyer Change");
+                ViewId =3;
                 break;
             case 3:
                 HeadingText.setText("Driver Complaints");
+                ViewId =4;
                 break;
             case 4:
                 HeadingText.setText("Profile");
+                ViewId =5;
                 break;
         }
     }

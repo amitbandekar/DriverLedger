@@ -110,6 +110,16 @@ public class PDFHandler {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             Cursor cursor = db.rawQuery("SELECT * FROM " + tableName, null);
 
+            // Check if the cursor is empty
+            if (cursor.getCount() == 0) {
+                cursor.close();
+                // Show SweetAlert for no data
+                new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("No Data Found")
+                        .setContentText("Add data first to export to PDF.")
+                        .show();
+                return; // Exit the method since there is no data
+            }
             // Add table data to PDF
             while (cursor.moveToNext()) {
                 for (int i = 1; i < cursor.getColumnCount(); i++) { // Skip 'id'
