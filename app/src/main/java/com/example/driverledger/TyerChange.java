@@ -129,6 +129,12 @@ public class TyerChange extends Fragment {
                 Intent intent = new Intent(getContext(), HomeScreen.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
+                // Close the AddNew activity (parent activity of the fragment)
+                // Apply transition animation (enter from right, exit to left)
+                requireActivity().overridePendingTransition(R.anim.exit_to_left, R.anim.enter_from_right);
+                requireActivity().finish();
+
+
             } else {
                 new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Error")

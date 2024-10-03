@@ -1,5 +1,6 @@
 package com.example.driverledger;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -24,6 +26,10 @@ import com.itextpdf.layout.property.UnitValue;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.net.Uri;
+import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
+
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +69,7 @@ public class PDFHandler {
         try {
             PdfWriter writer = new PdfWriter(pdfFile);
             PdfDocument pdfDocument = new PdfDocument(writer);
-            Document document = new Document(pdfDocument);
+            Document document = new Document(pdfDocument, PageSize.A4.rotate());
 
             // Get the proper heading from the predefined array (HashMap)
             String properHeading = tableNameHeadings.get(tableName);
@@ -140,19 +146,30 @@ public class PDFHandler {
     // HashMap to store user-friendly headings for each table
     private static final Map<String, String> tableNameHeadings = new HashMap<>();
     static {
-        tableNameHeadings.put("tblDriverComplaints", "Driver Complaints");
-        tableNameHeadings.put("tblServicingDetails", "Servicing Details");
-        tableNameHeadings.put("tblMaintenanceDetails", "Maintenance Details");
-        tableNameHeadings.put("tblTyreRepairs", "Tyre Repairs");
+        tableNameHeadings.put("tblDriverComplaints", "Driver Complaints Report");
+        tableNameHeadings.put("tblServicingDetails", "Servicing Details Report");
+        tableNameHeadings.put("tblMaintenanceDetails", "Maintenance Details Report");
+        tableNameHeadings.put("tblTyreRepairs", "Tyre Repairs Report");
     }
 
     // Method to open the PDF file using an Intent
     private void openPDF(Context context, File pdfFile) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(android.net.Uri.fromFile(pdfFile), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        context.startActivity(intent);
+        // Get URI using FileProvider
+        Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", pdfFile);
+
+        Intent pdfOpenIntent = new Intent(Intent.ACTION_VIEW);
+        pdfOpenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        pdfOpenIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        pdfOpenIntent.setDataAndType(uri, "application/pdf");
+
+        try {
+            context.startActivity(pdfOpenIntent);
+        } catch (ActivityNotFoundException e) {
+            // Handle the case where no PDF reader is installed
+            Toast.makeText(context, "No PDF viewer installed", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     // Column headers for each table
     private String[] getColumnHeaders(String tableName) {

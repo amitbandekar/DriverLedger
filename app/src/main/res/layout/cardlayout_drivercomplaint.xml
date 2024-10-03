@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
-
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+    android:background="#FEFAE0"
+    android:layout_marginBottom="16dp"
+
+    android:padding="16dp">
 
         <TextView
             android:id="@+id/tvVehicleNo"
@@ -19,7 +14,8 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="Vehicle No: KA01AB1234"/>
+            android:text="Vehicle No: KA01AB1234"
+            android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/tvModelName"
@@ -27,7 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvVehicleNo"
             android:layout_marginTop="4dp"
-            android:text="Model: Toyota Camry"/>
+            android:text="Model: Toyota Camry"
+            android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/tvDetails"
@@ -35,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvModelName"
             android:layout_marginTop="4dp"
-            android:text="Details: Strange noise from engine"/>
+            android:text="Details: Strange noise from engine"
+            android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/tvRemarks"
@@ -43,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvDetails"
             android:layout_marginTop="4dp"
-            android:text="Remarks: Needs immediate attention"/>
+            android:text="Remarks: Needs immediate attention"
+            android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/tvDate"
@@ -51,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvRemarks"
             android:layout_marginTop="4dp"
-            android:text="Date: 28-September-24"/>
+            android:text="Date: 28-September-24"
+            android:textColor="#000000"/>
 
         <ImageView
             android:id="@+id/ivDelete"
@@ -63,4 +63,3 @@
 
     </RelativeLayout>
 
-</androidx.cardview.widget.CardView>

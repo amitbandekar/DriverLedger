@@ -1,6 +1,5 @@
 package com.example.driverledger;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -126,47 +126,7 @@ public class HomeScreen extends AppCompatActivity {
             }
         });
 
-        ViewPager2 viewPager = findViewById(R.id.viewPager);
 
-
-        // Create the FragmentStateAdapter to manage the fragments
-        FragmentStateAdapter adapter = new FragmentStateAdapter(this) {
-            @NonNull
-            @Override
-            public Fragment createFragment(int position) {
-                switch (position) {
-                    case 0:
-                        return new ListView(); // Oil Change
-                    case 1:
-                        return new ListView(); // Other Maintenance
-                    case 2:
-                        return new ListView(); // Tyre Change
-                    case 3:
-                        return new ListView(); // Driver Complaints
-                    case 4:
-                        return new Profile();   // Profile
-                    default:
-                        return new ListView(); // Default to Oil Change
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                return 5; // Number of tabs
-            }
-        };
-
-// Attach the adapter to ViewPager2
-        viewPager.setAdapter(adapter);
-        addnew.setOnClickListener(v -> {
-
-            Intent intent = new Intent(HomeScreen.this, AddNew.class);
-            intent.putExtra("id", ViewId);              // Pass the id
-            intent.putExtra("recordId", 0);             // Pass recordId as 0
-            intent.putParcelableArrayListExtra("dataList", null);  // Pass bundleList as null
-            startActivity(intent);
-
-        });
         btnExportPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,24 +201,8 @@ public class HomeScreen extends AppCompatActivity {
 
     private void loadFragment(Fragment fragment) {
         Bundle bundle = new Bundle();
-        Cursor cursor = databaseHelper.getAllData(TableNames[ViewId - 1]); // Adjust index
-
-        ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
-
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                HashMap<String, String> dataMap = new HashMap<>();
-                for (int colIndex = 0; colIndex < cursor.getColumnCount(); colIndex++) {
-                    String columnName = cursor.getColumnName(colIndex);
-                    String columnValue = cursor.getString(colIndex);
-                    dataMap.put(columnName, columnValue);
-                }
-                dataList.add(dataMap);
-            } while (cursor.moveToNext());
-        }
 
         bundle.putInt("ViewId", ViewId);
-        bundle.putSerializable("dataList", dataList);
         fragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction()

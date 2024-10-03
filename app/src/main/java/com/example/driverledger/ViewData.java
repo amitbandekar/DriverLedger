@@ -78,8 +78,6 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
                 intent.putExtra("id", id);
                 startActivity(intent);
 
-                // Apply transition animation (enter from right, exit to left)
-                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
 
                 // Finish the current activity
                 finish();

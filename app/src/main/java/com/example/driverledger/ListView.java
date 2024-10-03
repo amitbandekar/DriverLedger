@@ -2,6 +2,7 @@ package com.example.driverledger;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,12 +15,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ListView extends Fragment {
+    private static final Logger log = LoggerFactory.getLogger(ListView.class);
     private DatabaseHelper databaseHelper;
     private static final String[] TableNames = { "tblServicingDetails", "tblMaintenanceDetails", "tblTyreRepairs", "tblDriverComplaints" };
 
@@ -37,13 +43,35 @@ public class ListView extends Fragment {
         loadingImageView = rootView.findViewById(R.id.loadingImageView);
         noRecordsTextView = rootView.findViewById(R.id.noRecordsTextView);
         cardListLayout = rootView.findViewById(R.id.cardListLayout);
+        loadData(inflater);
+
+
+        return rootView;
+    }
+
+    private void loadData(LayoutInflater inflater) {
+        ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
+        cardListLayout.removeAllViews();
 
         // Get the passed data from arguments
         if (getArguments() != null) {
             loadingImageView.setVisibility(View.VISIBLE);
             noRecordsTextView.setVisibility(View.GONE);
-            int viewId = getArguments().getInt("ViewId", -1); // -1 is the default value if no id is found
-            ArrayList<HashMap<String, String>> dataList = (ArrayList<HashMap<String, String>>) getArguments().getSerializable("dataList");
+            int viewId = getArguments().getInt("ViewId", 1); // -1 is the default value if no id is found
+            Cursor cursor = databaseHelper.getAllData(TableNames[viewId - 1]);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    HashMap<String, String> dataMap = new HashMap<>();
+                    for (int colIndex = 0; colIndex < cursor.getColumnCount(); colIndex++) {
+                        String columnName = cursor.getColumnName(colIndex);
+                        String columnValue = cursor.getString(colIndex);
+                        dataMap.put(columnName, columnValue);
+                    }
+                    dataList.add(dataMap);
+                } while (cursor.moveToNext());
+            }
+
             if (dataList != null && !dataList.isEmpty()) {
                 if (viewId == 1) {
                     // Loop through each record in the dataList and create card views
@@ -86,7 +114,11 @@ public class ListView extends Fragment {
                                                         .setTitleText("Success!")
                                                         .setContentText("Record deleted successfully!")
                                                         .setConfirmText("OK")
-                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .setConfirmClickListener(sweetAlertDialog -> {
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            // Refresh the current fragment
+                                                            loadData(inflater);
+                                                        })
                                                         .show();
 
                                             } else {
@@ -164,7 +196,7 @@ public class ListView extends Fragment {
                                                         .setConfirmClickListener(sweetAlertDialog -> {
                                                             sweetAlertDialog.dismissWithAnimation();
                                                             // Refresh the current fragment
-                                                            refreshFragment();
+                                                            loadData(inflater);
                                                         })
                                                         .show();
                                             } else {
@@ -242,9 +274,12 @@ public class ListView extends Fragment {
                                                         .setTitleText("Success!")
                                                         .setContentText("Record deleted successfully!")
                                                         .setConfirmText("OK")
-                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .setConfirmClickListener(sweetAlertDialog -> {
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            // Refresh the current fragment
+                                                            loadData(inflater);
+                                                        })
                                                         .show();
-
                                             } else {
                                                 new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                                                         .setTitleText("Error!")
@@ -314,13 +349,17 @@ public class ListView extends Fragment {
                                         public void onClick(SweetAlertDialog sDialog) {
                                             sDialog.dismissWithAnimation();
                                             // Handle the delete action, for example: deleteItem();
-                                           boolean success = databaseHelper.DeleteRecordById(TableNames[viewId-1],recordId);
+                                            boolean success = databaseHelper.DeleteRecordById(TableNames[viewId-1],recordId);
                                             if (success) {
                                                 new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                                         .setTitleText("Success!")
                                                         .setContentText("Record deleted successfully!")
                                                         .setConfirmText("OK")
-                                                        .setConfirmClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation())
+                                                        .setConfirmClickListener(sweetAlertDialog -> {
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            // Refresh the current fragment
+                                                            loadData(inflater);
+                                                        })
                                                         .show();
 
                                             } else {
@@ -366,17 +405,10 @@ public class ListView extends Fragment {
                 noRecordsTextView.setVisibility(View.VISIBLE);
             }
         }
+    }
 
-        return rootView;
-    }
-    private void refreshFragment() {
-        Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.fragment_container); // Update with your actual fragment container ID
-        if (currentFragment != null) {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.detach(currentFragment); // Detach the current fragment
-            transaction.attach(currentFragment); // Reattach to refresh
-            transaction.commit();
-        }
-    }
+
+
+
 }
 

@@ -118,6 +118,8 @@ public class OtherMaintenance extends Fragment {
             Intent intent = new Intent(getContext(), HomeScreen.class);
             intent.putExtra("id", id);
             startActivity(intent);
+            // Close the AddNew activity (parent activity of the fragment)
+            requireActivity().finish();
         } else {
             new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Error")
