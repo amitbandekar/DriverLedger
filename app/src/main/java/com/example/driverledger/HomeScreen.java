@@ -38,6 +38,8 @@ public class HomeScreen extends AppCompatActivity {
     int ViewId = 1;
     private static final int PICK_PDF_REQUEST = 1; // Define your request code here
     private PDFHandler pdfHandler;
+    private ViewPager2 viewPager;
+    private BottomNavigationView bottomNavigation;
 
     ImageView addnew,btnExportPdf,btnImport;
     private TextView HeadingText;
@@ -46,7 +48,8 @@ public class HomeScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-
+        viewPager = findViewById(R.id.viewPager);
+        bottomNavigation = findViewById(R.id.bottomNavigation);
 
         pdfHandler = new PDFHandler(this); // Initialize PDFHandler with context
 
@@ -57,76 +60,10 @@ public class HomeScreen extends AppCompatActivity {
         HeadingText = findViewById(R.id.titleTextView);
         btnImport = findViewById(R.id.btnImportPdf);
 
-        if (getIntent() != null) {
-            int ViewId = getIntent().getIntExtra("id", 1);
 
-            if (ViewId == 1) {
-                HeadingText.setText("Oil Change");
-                bottomNavigation.setSelectedItemId(R.id.nav_oil_change);
-            }
-            else if (ViewId == 2) {
-                HeadingText.setText("Other Maintenance");
-                bottomNavigation.setSelectedItemId(R.id.nav_maintenance);
-            }
-            else if (ViewId == 3) {
-                HeadingText.setText("Tyre Change");
-                bottomNavigation.setSelectedItemId(R.id.nav_tyre_change);
-            }
-            else if (ViewId == 4) {
-                HeadingText.setText("Driver Complaints");
-                bottomNavigation.setSelectedItemId(R.id.nav_driver_complaints);
-            }
-        }
-
-        // Load the default fragment (Driver Details)
-        loadFragment(new ListView());
-
-        bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment = null;
-                addnew.setVisibility(View.VISIBLE);
-                btnExportPdf.setVisibility(View.VISIBLE);
-                btnImport.setVisibility(View.VISIBLE);
-
-                switch (item.getItemId()) {
-                    case R.id.nav_oil_change:
-                        fragment = new ListView();
-                        HeadingText.setText("Oil Change");
-                        ViewId = 1;
-                        break;
-                    case R.id.nav_maintenance:
-                        fragment = new ListView();
-                        HeadingText.setText("Other Maintainance");
-                        ViewId = 2;
-                        break;
-                    case R.id.nav_tyre_change:
-                        fragment = new ListView();
-                        HeadingText.setText("Tyer Change");
-                        ViewId = 3;
-                        break;
-                    case R.id.nav_driver_complaints:
-                        fragment = new ListView();
-                        HeadingText.setText("Driver Complaints");
-                        ViewId = 4;
-                        break;
-                    case R.id.nav_profile:
-                        fragment = new Profile();
-                        HeadingText.setText("Profile");
-                        addnew.setVisibility(View.GONE);
-                        btnExportPdf.setVisibility(View.GONE);
-                        btnImport.setVisibility(View.GONE);
-                        break;
-                }
-
-                if (fragment != null) {
-                    loadFragment(fragment);
-                }
-                return true;
-            }
-        });
-
-
+        setupViewPager();
+        setupBottomNavigation();
+        handleIncomingIntent();
         btnExportPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,7 +98,15 @@ public class HomeScreen extends AppCompatActivity {
                 }
             }
         });
+        addnew.setOnClickListener(v -> {
 
+            Intent intent = new Intent(HomeScreen.this, AddNew.class);
+            intent.putExtra("id", ViewId);              // Pass the id
+            intent.putExtra("recordId", 0);             // Pass recordId as 0
+            intent.putParcelableArrayListExtra("dataList", null);  // Pass bundleList as null
+            startActivity(intent);
+
+        });
 
         btnImport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,16 +143,126 @@ public class HomeScreen extends AppCompatActivity {
         });
 
     }
+    private void handleIncomingIntent() {
+        if (getIntent() != null) {
+            int viewId = getIntent().getIntExtra("id", 1);
+            navigateToPage(viewId);
+        }
+    }
+    private void navigateToPage(int viewId) {
+        int position;
+        switch (viewId) {
+            case 1:
+                position = 0; // Oil Change
+                break;
+            case 2:
+                position = 1; // Other Maintenance
+                break;
+            case 3:
+                position = 2; // Tyre Change
+                break;
+            case 4:
+                position = 3; // Driver Complaints
+                break;
+            default:
+                position = 0;
+                break;
+        }
 
-    private void loadFragment(Fragment fragment) {
-        Bundle bundle = new Bundle();
+        // Update ViewPager
+        viewPager.setCurrentItem(position, false); // false for instant switch
 
-        bundle.putInt("ViewId", ViewId);
-        fragment.setArguments(bundle);
+        // Update UI directly (don't rely on callbacks when coming from intent)
+        updateUI(position);
+    }
+    private void setupBottomNavigation() {
+        // This is your click listener for bottom navigation
+        bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit(); // Optional: .addToBackStack(null) if needed
+                // Determine which page to show based on clicked item
+                if (itemId == R.id.nav_oil_change) {
+                    viewPager.setCurrentItem(0);
+                    updateUI(0);
+                    return true;
+                } else if (itemId == R.id.nav_maintenance) {
+                    viewPager.setCurrentItem(1);
+                    updateUI(1);
+                    return true;
+                } else if (itemId == R.id.nav_tyre_change) {
+                    viewPager.setCurrentItem(2);
+                    updateUI(2);
+                    return true;
+                } else if (itemId == R.id.nav_driver_complaints) {
+                    viewPager.setCurrentItem(3);
+                    updateUI(3);
+                    return true;
+                } else if (itemId == R.id.nav_profile) {
+                    viewPager.setCurrentItem(4);
+                    updateUI(4);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void setupViewPager() {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        viewPager.setAdapter(adapter);
+
+        // This handles swipe gestures and syncs with bottom navigation
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                // Update bottom navigation when page is changed by swipe
+                switch (position) {
+                    case 0:
+                        bottomNavigation.setSelectedItemId(R.id.nav_oil_change);
+                        break;
+                    case 1:
+                        bottomNavigation.setSelectedItemId(R.id.nav_maintenance);
+                        break;
+                    case 2:
+                        bottomNavigation.setSelectedItemId(R.id.nav_tyre_change);
+                        break;
+                    case 3:
+                        bottomNavigation.setSelectedItemId(R.id.nav_driver_complaints);
+                        break;
+                    case 4:
+                        bottomNavigation.setSelectedItemId(R.id.nav_profile);
+                        break;
+                }
+                updateUI(position);
+            }
+        });
+    }
+
+    private void updateUI(int position) {
+        // Your existing UI update code
+        addnew.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
+        btnExportPdf.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
+        btnImport.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
+
+        switch (position) {
+            case 0:
+                HeadingText.setText("Oil Change");
+                break;
+            case 1:
+                HeadingText.setText("Other Maintainance");
+                break;
+            case 2:
+                HeadingText.setText("Tyer Change");
+                break;
+            case 3:
+                HeadingText.setText("Driver Complaints");
+                break;
+            case 4:
+                HeadingText.setText("Profile");
+                break;
+        }
     }
 
     @Override

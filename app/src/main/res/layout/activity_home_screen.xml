@@ -57,15 +57,14 @@
     </LinearLayout>
 
 
-    <!-- Fragment Container -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <!-- This is where fragments will be loaded -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_below="@id/headerLayout"
-        android:layout_above="@id/bottomNavigation"
-        android:background="#F7C4A5"/>
+        android:layout_above="@id/bottomNavigation" />
+
 
 
 
