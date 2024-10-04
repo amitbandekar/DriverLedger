@@ -1,13 +1,20 @@
 package com.example.driverledger;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -19,6 +26,8 @@ int id =1;
 int RecordId;
 private DatabaseHelper databaseHelper;
 private static final String[] TableNames = { "tblServicingDetails", "tblMaintenanceDetails", "tblTyreRepairs", "tblDriverComplaints" };
+ImageView btnBack,btnExportPdf,btnEdit;
+private PDFHandler pdfHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +78,7 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
             loadFragment(new View_Drivercomplaints(),id,RecordId, dataList);
         }
 
-        ImageView btnBack = findViewById(R.id.btnBack);
+        btnBack = findViewById(R.id.btnBack);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +93,7 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
             }
         });
 
-        ImageView btnEdit = findViewById(R.id.btnEdit);
+        btnEdit = findViewById(R.id.btnEdit);
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +104,44 @@ private static final String[] TableNames = { "tblServicingDetails", "tblMaintena
                 intent.putExtra("recordId", RecordId);
                 intent.putParcelableArrayListExtra("dataList", bundleList);
                 startActivity(intent);
+            }
+        });
+
+        btnExportPdf = findViewById(R.id.btnExportPdf);
+
+        pdfHandler = new PDFHandler(this); // Initialize PDFHandler with context
+
+        btnExportPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    // Android 11 or above
+                    if (!Environment.isExternalStorageManager()) {
+                        // Request for Manage All Files Access permission
+                        try {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                            startActivity(intent);
+                        }
+                    } else {
+                        // Permission already granted, export to PDF
+                        pdfHandler.generateVehicleServiceReport(ViewData.this,dataList);
+                    }
+                } else {
+                    // Android version below 11 (R), check and request WRITE_EXTERNAL_STORAGE permission
+                    if (ContextCompat.checkSelfPermission(ViewData.this,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ViewData.this,
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    } else {
+                        // If permission is already granted, proceed with exporting
+                        pdfHandler.generateVehicleServiceReport(ViewData.this,dataList);
+                    }
+                }
             }
         });
 

@@ -26,12 +26,13 @@
             android:contentDescription="Export pdf"
             android:padding="2dp"
             android:src="@drawable/ic_export_pdf" />
- <ImageView
+        <ImageView
             android:id="@+id/btnImportPdf"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="Import pdf"
             android:padding="2dp"
+            android:visibility="gone"
             android:src="@drawable/ic_import_pdf" />
 
         <!-- Title Text (Driver Details) -->

@@ -236,7 +236,7 @@ public class HomeScreen extends AppCompatActivity {
         // Your existing UI update code
         addnew.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
         btnExportPdf.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
-        btnImport.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
+        //btnImport.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
 
         switch (position) {
             case 0:

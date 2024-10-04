@@ -5,11 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 
 import com.example.driverledger.DatabaseHelper;
 import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -19,17 +24,22 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
@@ -309,5 +319,106 @@ public class PDFHandler {
             default:
                 throw new IllegalArgumentException("Invalid table name: " + tableName);
         }
+    }
+    public void generateVehicleServiceReport(Context context, ArrayList<HashMap<String, String>> dataList) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateTime = sdf.format(new Date());
+        String pdfName = "DriverMate_VechicleReport_" + currentDateTime + ".pdf";
+
+        // Define the directory
+        File directory = new File(Environment.getExternalStorageDirectory() + "/DriverMate");
+        if (!directory.exists()) {
+            directory.mkdirs(); // Create the directory if it doesn't exist
+        }
+
+        File pdfFile = new File(directory, pdfName);
+
+
+        try {
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf, PageSize.A4);
+
+            DeviceRgb primaryColor = new DeviceRgb(63, 81, 181);
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold", true);
+            PdfFont regularFont = PdfFontFactory.createFont("Helvetica", true);
+
+            // Header
+            Table header = new Table(1).useAllAvailableWidth();
+            Cell headerCell = new Cell()
+                    .setBackgroundColor(primaryColor)
+                    .setPadding(20);
+
+            Paragraph headerText = new Paragraph("Vehicle Service Report")
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            headerCell.add(headerText);
+            header.addCell(headerCell);
+            document.add(header);
+
+            if (!dataList.isEmpty()) {
+                HashMap<String, String> data = dataList.get(0);
+
+                // Vehicle Details
+                addSection(document, "Vehicle Details", boldFont, regularFont, primaryColor);
+                addDetail(document, "Vehicle Number", data.get("vehicleNo"), regularFont);
+                addDetail(document, "Model Name", data.get("modelName"), regularFont);
+
+                // Service Information
+                addSection(document, "Service Information", boldFont, regularFont, primaryColor);
+                addDetail(document, "Date and Time", data.get("currentDateTime"), regularFont);
+                addDetail(document, "Running KM", data.get("runningKm"), regularFont);
+                addDetail(document, "Next Service KM", data.get("nextServiceKm"), regularFont);
+
+                // Service Details
+                addSection(document, "Service Details", boldFont, regularFont, primaryColor);
+                Table serviceTable = new Table(2).useAllAvailableWidth();
+                addServiceRow(serviceTable, "Diesel Filter Change", data.get("dieselFilterChange"), regularFont);
+                addServiceRow(serviceTable, "Brake Oil Change", data.get("breakOilChange"), regularFont);
+                addServiceRow(serviceTable, "Coolant Change", data.get("coolantChange"), regularFont);
+                document.add(serviceTable);
+
+                // Remarks
+                addSection(document, "Remarks", boldFont, regularFont, primaryColor);
+                document.add(new Paragraph(data.get("remark")).setFont(regularFont));
+            }
+
+            document.close();
+
+            // Show SweetAlert success message with 'Open PDF' button
+            new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success!")
+                    .setContentText("Data exported successfully to PDF.")
+                    .setConfirmText("Open PDF")
+                    .setConfirmClickListener(sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        // Open the PDF using an Intent
+                        openPDF(context, pdfFile);
+                    })
+                    .show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., show an error message)
+            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error!")
+                    .setContentText("Error exporting data: " + e.getMessage())
+                    .show();
+        }
+    }
+
+    private static void addSection(Document document, String title, PdfFont boldFont, PdfFont regularFont, DeviceRgb primaryColor) {
+        document.add(new Paragraph(title).setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+    }
+
+    private static void addDetail(Document document, String label, String value, PdfFont regularFont) {
+        document.add(new Paragraph(label + ": " + value).setFont(regularFont));
+    }
+
+    private static void addServiceRow(Table table, String serviceName, String status, PdfFont regularFont) {
+        table.addCell(new Cell().add(new Paragraph(serviceName).setFont(regularFont)));
+        table.addCell(new Cell().add(new Paragraph(status.equals("Yes") ? "✓" : "✗").setFont(regularFont)));
     }
 }
