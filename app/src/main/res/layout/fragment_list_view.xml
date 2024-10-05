@@ -5,22 +5,11 @@
     android:background="#F7C4A5">
 
     <!-- Scrollable Content -->
-    <ScrollView
-        android:id="@+id/scrollView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:id="@+id/cardListLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-            <!-- Dynamic Card items will be added here programmatically -->
-        </LinearLayout>
-    </ScrollView>
-
+        android:padding="16dp"
+        android:layout_height="wrap_content" />
     <!-- Loading GIF (Centered) -->
     <ImageView
         android:id="@+id/loadingImageView"

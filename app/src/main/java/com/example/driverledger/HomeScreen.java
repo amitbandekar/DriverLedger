@@ -14,8 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +34,8 @@ public class HomeScreen extends AppCompatActivity {
     private PDFHandler pdfHandler;
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
-
+    private ImageView searchIcon;
+    private EditText searchEditText;
     ImageView addnew,btnExportPdf,btnImport;
     private TextView HeadingText;
 
@@ -43,14 +47,16 @@ public class HomeScreen extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottomNavigation);
 
         pdfHandler = new PDFHandler(this); // Initialize PDFHandler with context
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
 
         addnew = findViewById(R.id.addIcon);
         btnExportPdf = findViewById(R.id.btnExportPdf);
         HeadingText = findViewById(R.id.titleTextView);
         btnImport = findViewById(R.id.btnImportPdf);
+        searchIcon = findViewById(R.id.searchIcon);
+        searchEditText = findViewById(R.id.searchEditText);
 
-
-        setupViewPager();
+        setupViewPager(adapter);
         setupBottomNavigation();
         handleIncomingIntent();
 
@@ -134,6 +140,22 @@ public class HomeScreen extends AppCompatActivity {
             }
         });
 
+
+        // Set up search functionality
+        searchIcon.setOnClickListener(v -> toggleSearchBar());
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                performSearch(s.toString(),adapter);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
     private void handleIncomingIntent() {
         if (getIntent() != null) {
@@ -201,8 +223,7 @@ public class HomeScreen extends AppCompatActivity {
         });
     }
 
-    private void setupViewPager() {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+    private void setupViewPager(ViewPagerAdapter adapter) {
         viewPager.setAdapter(adapter);
 
         // This handles swipe gestures and syncs with bottom navigation
@@ -291,6 +312,21 @@ public class HomeScreen extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select PDF"), PICK_PDF_REQUEST);
     }
 
+    private void toggleSearchBar() {
+        if (searchEditText.getVisibility() == View.VISIBLE) {
+            searchEditText.setVisibility(View.GONE);
+            searchEditText.setText("");
+        } else {
+            searchEditText.setVisibility(View.VISIBLE);
+            searchEditText.requestFocus();
+        }
+    }
 
+    private void performSearch(String query, ViewPagerAdapter adapter) {
+        ListView currentFragment = (ListView) adapter.getFragment(viewPager.getCurrentItem());
+        if (currentFragment != null) {
+            currentFragment.filterData(query,ViewId);
+        }
+    }
 
 }

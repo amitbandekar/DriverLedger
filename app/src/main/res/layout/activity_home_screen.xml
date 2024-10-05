@@ -55,8 +55,25 @@
             app:tint="#FFFFFF"
             android:contentDescription="Add Driver"
            />
+        <!-- New Search Button -->
+        <ImageView
+            android:id="@+id/searchIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_search"
+            app:tint="#FFFFFF"
+            android:contentDescription="Search"
+            android:layout_marginLeft="8dp"/>
     </LinearLayout>
-
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerLayout"
+        android:background="#FFFFFF"
+        android:hint="Search..."
+        android:padding="8dp"
+        android:visibility="gone"/>
 
     <!-- This is where fragments will be loaded -->
     <androidx.viewpager2.widget.ViewPager2
