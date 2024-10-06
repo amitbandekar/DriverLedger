@@ -28,20 +28,13 @@
             android:textColor="@android:color/black"
             android:text="Model: Ford Mustang"/>
 
-        <TextView
-            android:id="@+id/tvDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvModelName"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/black"
-            android:text="Details: Brake pad replacement"/>
+
 
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvDetails"
+            android:layout_below="@id/tvModelName"
             android:layout_marginTop="4dp"
             android:textColor="@android:color/black"
             android:text="Date: 28-September-24"/>

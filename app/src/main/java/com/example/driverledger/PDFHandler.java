@@ -27,6 +27,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
@@ -211,14 +212,6 @@ public class PDFHandler {
         }
     }
 
-    public void importDataFromPDF(String tableName, Activity activity) {
-        // Open a file chooser to allow the user to pick a PDF file
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("application/pdf");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        activity.startActivityForResult(intent, PICK_PDF_FILE); // Start the activity to pick a PDF
-    }
-
     // Handle the result from the file chooser
     public void handleFilePicked(int requestCode, int resultCode, Intent data, Context context, String tableName) {
         if (requestCode == PICK_PDF_FILE && resultCode == Activity.RESULT_OK) {
@@ -323,7 +316,7 @@ public class PDFHandler {
     public void generateVehicleServiceReport(Context context, ArrayList<HashMap<String, String>> dataList) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String currentDateTime = sdf.format(new Date());
-        String pdfName = "DriverMate_VechicleReport_" + currentDateTime + ".pdf";
+        String pdfName = "DriverMate_VehicleReport_" + currentDateTime + ".pdf";
 
         // Define the directory
         File directory = new File(Environment.getExternalStorageDirectory() + "/DriverMate");
@@ -332,7 +325,6 @@ public class PDFHandler {
         }
 
         File pdfFile = new File(directory, pdfName);
-
 
         try {
             PdfWriter writer = new PdfWriter(pdfFile);
@@ -362,27 +354,30 @@ public class PDFHandler {
             if (!dataList.isEmpty()) {
                 HashMap<String, String> data = dataList.get(0);
 
-                // Vehicle Details
-                addSection(document, "Vehicle Details", boldFont, regularFont, primaryColor);
-                addDetail(document, "Vehicle Number", data.get("vehicleNo"), regularFont);
-                addDetail(document, "Model Name", data.get("modelName"), regularFont);
+                // Vehicle Details Section
+                document.add(new Paragraph("Vehicle Details").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Vehicle Number: ").setFont(boldFont)).add(new Text(data.get("vehicleNo")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Model Name: ").setFont(boldFont)).add(new Text(data.get("modelName")).setFont(regularFont)));
 
-                // Service Information
-                addSection(document, "Service Information", boldFont, regularFont, primaryColor);
-                addDetail(document, "Date and Time", data.get("currentDateTime"), regularFont);
-                addDetail(document, "Running KM", data.get("runningKm"), regularFont);
-                addDetail(document, "Next Service KM", data.get("nextServiceKm"), regularFont);
+                // Service Information Section
+                document.add(new Paragraph("Service Information").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Date and Time: ").setFont(boldFont)).add(new Text(data.get("currentDateTime")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Running KM: ").setFont(boldFont)).add(new Text(data.get("runningKm")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Next Service KM: ").setFont(boldFont)).add(new Text(data.get("nextServiceKm")).setFont(regularFont)));
 
-                // Service Details
-                addSection(document, "Service Details", boldFont, regularFont, primaryColor);
+                // Service Details Section
+                document.add(new Paragraph("Service Details").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
                 Table serviceTable = new Table(2).useAllAvailableWidth();
-                addServiceRow(serviceTable, "Diesel Filter Change", data.get("dieselFilterChange"), regularFont);
-                addServiceRow(serviceTable, "Brake Oil Change", data.get("breakOilChange"), regularFont);
-                addServiceRow(serviceTable, "Coolant Change", data.get("coolantChange"), regularFont);
+                serviceTable.addCell(new Cell().add(new Paragraph("Diesel Filter Change").setFont(boldFont)));
+                serviceTable.addCell(new Cell().add(new Paragraph(data.get("dieselFilterChange").equals("Yes") ? "Yes " : "No").setFont(regularFont)));
+                serviceTable.addCell(new Cell().add(new Paragraph("Brake Oil Change").setFont(boldFont)));
+                serviceTable.addCell(new Cell().add(new Paragraph(data.get("breakOilChange").equals("Yes") ? "Yes " : "No").setFont(regularFont)));
+                serviceTable.addCell(new Cell().add(new Paragraph("Coolant Change").setFont(boldFont)));
+                serviceTable.addCell(new Cell().add(new Paragraph(data.get("coolantChange").equals("Yes") ? "Yes " : "No").setFont(regularFont)));
                 document.add(serviceTable);
 
-                // Remarks
-                addSection(document, "Remarks", boldFont, regularFont, primaryColor);
+                // Remarks Section
+                document.add(new Paragraph("Remarks").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
                 document.add(new Paragraph(data.get("remark")).setFont(regularFont));
             }
 
@@ -409,16 +404,247 @@ public class PDFHandler {
         }
     }
 
-    private static void addSection(Document document, String title, PdfFont boldFont, PdfFont regularFont, DeviceRgb primaryColor) {
-        document.add(new Paragraph(title).setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+    public void generateTyreServiceReport(Context context, ArrayList<HashMap<String, String>> dataList) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateTime = sdf.format(new Date());
+        String pdfName = "DriverMate_TyreServiceReport_" + currentDateTime + ".pdf";
+
+        // Define the directory
+        File directory = new File(Environment.getExternalStorageDirectory() + "/DriverMate");
+        if (!directory.exists()) {
+            directory.mkdirs(); // Create the directory if it doesn't exist
+        }
+
+        File pdfFile = new File(directory, pdfName);
+
+        try {
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf, PageSize.A4);
+
+            DeviceRgb primaryColor = new DeviceRgb(63, 81, 181);
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold", true);
+            PdfFont regularFont = PdfFontFactory.createFont("Helvetica", true);
+
+            // Header
+            Table header = new Table(1).useAllAvailableWidth();
+            Cell headerCell = new Cell()
+                    .setBackgroundColor(primaryColor)
+                    .setPadding(20);
+
+            Paragraph headerText = new Paragraph("Tyre Service Report")
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            headerCell.add(headerText);
+            header.addCell(headerCell);
+            document.add(header);
+
+            if (!dataList.isEmpty()) {
+                HashMap<String, String> data = dataList.get(0);
+
+                // Vehicle Details Section
+                document.add(new Paragraph("Vehicle Details").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Vehicle Number: ").setFont(boldFont)).add(new Text(data.get("vehicleNo")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Model Name: ").setFont(boldFont)).add(new Text(data.get("modelName")).setFont(regularFont)));
+
+                // Tyre Service Information Section
+                document.add(new Paragraph("Tyre Service Information").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Tyre Quantity: ").setFont(boldFont)).add(new Text(data.get("tyreQty")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Alignment & Balancing: ").setFont(boldFont)).add(new Text(data.get("alignmentBalancing").equals("1") ? "Yes" : "No").setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Alignment KM: ").setFont(boldFont)).add(new Text(data.get("alignmentKm")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Next Alignment KM: ").setFont(boldFont)).add(new Text(data.get("nextAlignmentKm")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Date and Time: ").setFont(boldFont)).add(new Text(data.get("currentDateTime")).setFont(regularFont)));
+
+                // Remarks Section
+                document.add(new Paragraph("Remarks").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph(data.get("remark")).setFont(regularFont));
+
+                // Date & Time Section
+            }
+
+            document.close();
+
+            // Show SweetAlert success message with 'Open PDF' button
+            new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success!")
+                    .setContentText("Data exported successfully to PDF.")
+                    .setConfirmText("Open PDF")
+                    .setConfirmClickListener(sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        // Open the PDF using an Intent
+                        openPDF(context, pdfFile);
+                    })
+                    .show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., show an error message)
+            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error!")
+                    .setContentText("Error exporting data: " + e.getMessage())
+                    .show();
+        }
     }
 
-    private static void addDetail(Document document, String label, String value, PdfFont regularFont) {
-        document.add(new Paragraph(label + ": " + value).setFont(regularFont));
+    public void generateMaintenanceReport(Context context, ArrayList<HashMap<String, String>> dataList) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateTime = sdf.format(new Date());
+        String pdfName = "DriverMate_MaintenanceReport_" + currentDateTime + ".pdf";
+
+        // Define the directory
+        File directory = new File(Environment.getExternalStorageDirectory() + "/DriverMate");
+        if (!directory.exists()) {
+            directory.mkdirs(); // Create the directory if it doesn't exist
+        }
+
+        File pdfFile = new File(directory, pdfName);
+
+        try {
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf, PageSize.A4);
+
+            DeviceRgb primaryColor = new DeviceRgb(63, 81, 181);
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold", true);
+            PdfFont regularFont = PdfFontFactory.createFont("Helvetica", true);
+
+            // Header
+            Table header = new Table(1).useAllAvailableWidth();
+            Cell headerCell = new Cell()
+                    .setBackgroundColor(primaryColor)
+                    .setPadding(20);
+
+            Paragraph headerText = new Paragraph("Maintenance Report")
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            headerCell.add(headerText);
+            header.addCell(headerCell);
+            document.add(header);
+
+            if (!dataList.isEmpty()) {
+                HashMap<String, String> data = dataList.get(0);
+
+                // Vehicle Details Section
+                document.add(new Paragraph("Vehicle Details").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Vehicle Number: ").setFont(boldFont)).add(new Text(data.get("vehicleNo")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Model Name: ").setFont(boldFont)).add(new Text(data.get("modelName")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Date and Time: ").setFont(boldFont)).add(new Text(data.get("currentDateTime")).setFont(regularFont)));
+
+                // Maintenance Information Section
+                document.add(new Paragraph("Maintenance Information").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Details: ").setFont(boldFont)).add(new Text(data.get("details")).setFont(regularFont)));
+
+                // Date & Time Section
+            }
+
+            document.close();
+
+            // Show SweetAlert success message with 'Open PDF' button
+            new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success!")
+                    .setContentText("Data exported successfully to PDF.")
+                    .setConfirmText("Open PDF")
+                    .setConfirmClickListener(sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        // Open the PDF using an Intent
+                        openPDF(context, pdfFile);
+                    })
+                    .show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., show an error message)
+            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error!")
+                    .setContentText("Error exporting data: " + e.getMessage())
+                    .show();
+        }
     }
 
-    private static void addServiceRow(Table table, String serviceName, String status, PdfFont regularFont) {
-        table.addCell(new Cell().add(new Paragraph(serviceName).setFont(regularFont)));
-        table.addCell(new Cell().add(new Paragraph(status.equals("Yes") ? "✓" : "✗").setFont(regularFont)));
+    public void generateDriverComplaintReport(Context context, ArrayList<HashMap<String, String>> dataList) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateTime = sdf.format(new Date());
+        String pdfName = "DriverMate_ComplaintReport_" + currentDateTime + ".pdf";
+
+        // Define the directory
+        File directory = new File(Environment.getExternalStorageDirectory() + "/DriverMate");
+        if (!directory.exists()) {
+            directory.mkdirs(); // Create the directory if it doesn't exist
+        }
+
+        File pdfFile = new File(directory, pdfName);
+
+        try {
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf, PageSize.A4);
+
+            DeviceRgb primaryColor = new DeviceRgb(63, 81, 181);
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold", true);
+            PdfFont regularFont = PdfFontFactory.createFont("Helvetica", true);
+
+            // Header
+            Table header = new Table(1).useAllAvailableWidth();
+            Cell headerCell = new Cell()
+                    .setBackgroundColor(primaryColor)
+                    .setPadding(20);
+
+            Paragraph headerText = new Paragraph("Driver Complaint Report")
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            headerCell.add(headerText);
+            header.addCell(headerCell);
+            document.add(header);
+
+            if (!dataList.isEmpty()) {
+                HashMap<String, String> data = dataList.get(0);
+
+                // Vehicle Details Section
+                document.add(new Paragraph("Vehicle Details").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Vehicle Number: ").setFont(boldFont)).add(new Text(data.get("vehicleNo")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Model Name: ").setFont(boldFont)).add(new Text(data.get("modelName")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Date and Time: ").setFont(boldFont)).add(new Text(data.get("currentDateTime")).setFont(regularFont)));
+
+                // Complaint Information Section
+                document.add(new Paragraph("Complaint Information").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Details: ").setFont(boldFont)).add(new Text(data.get("details")).setFont(regularFont)));
+                document.add(new Paragraph().add(new Text("Remarks: ").setFont(boldFont)).add(new Text(data.get("remarks")).setFont(regularFont)));
+
+                // Problem Closed Section
+                document.add(new Paragraph("Problem Status").setFont(boldFont).setFontSize(18).setFontColor(primaryColor).setMarginTop(20));
+                document.add(new Paragraph().add(new Text("Problem Closed: ").setFont(boldFont)).add(new Text(data.get("problemClosed")).setFont(regularFont)));
+
+                // Date & Time Section
+            }
+
+            document.close();
+
+            // Show SweetAlert success message with 'Open PDF' button
+            new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success!")
+                    .setContentText("Data exported successfully to PDF.")
+                    .setConfirmText("Open PDF")
+                    .setConfirmClickListener(sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        // Open the PDF using an Intent
+                        openPDF(context, pdfFile);
+                    })
+                    .show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., show an error message)
+            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error!")
+                    .setContentText("Error exporting data: " + e.getMessage())
+                    .show();
+        }
     }
+
 }

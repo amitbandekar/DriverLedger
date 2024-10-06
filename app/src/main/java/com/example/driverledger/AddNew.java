@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -46,7 +47,17 @@ public class AddNew extends AppCompatActivity {
             // Finish the current activity
             finish();
         });
-
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(AddNew.this, HomeScreen.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+                // Finish the current activity
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
         // Based on the id, load the appropriate fragment
         if (id == 1) {

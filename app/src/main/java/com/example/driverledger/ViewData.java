@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -91,6 +92,18 @@ private PDFHandler pdfHandler;
             }
         });
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(ViewData.this, HomeScreen.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+                // Finish the current activity
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
         btnEdit = findViewById(R.id.btnEdit);
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +141,18 @@ private PDFHandler pdfHandler;
                         }
                     } else {
                         // Permission already granted, export to PDF
-                        pdfHandler.generateVehicleServiceReport(ViewData.this,dataList);
+                        if(id==1)
+                            pdfHandler.generateVehicleServiceReport(ViewData.this,dataList);
+                        else if (id==2){
+                            pdfHandler.generateMaintenanceReport(ViewData.this,dataList);
+                        }
+                        else if (id==3){
+                            pdfHandler.generateTyreServiceReport(ViewData.this,dataList);
+                        }else if (id==4){
+                            pdfHandler.generateDriverComplaintReport(ViewData.this,dataList);
+                        }
+
+
                     }
                 } else {
                     // Android version below 11 (R), check and request WRITE_EXTERNAL_STORAGE permission
@@ -138,8 +162,16 @@ private PDFHandler pdfHandler;
                                 new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     } else {
                         // If permission is already granted, proceed with exporting
-                        pdfHandler.generateVehicleServiceReport(ViewData.this,dataList);
-                    }
+                        if(id==1)
+                            pdfHandler.generateVehicleServiceReport(ViewData.this,dataList);
+                        else if (id==2){
+                            pdfHandler.generateMaintenanceReport(ViewData.this,dataList);
+                        }
+                        else if (id==3){
+                            pdfHandler.generateTyreServiceReport(ViewData.this,dataList);
+                        }else if (id==4){
+                            pdfHandler.generateDriverComplaintReport(ViewData.this,dataList);
+                        }                    }
                 }
             }
         });
@@ -159,5 +191,7 @@ private PDFHandler pdfHandler;
                 .replace(R.id.fragment_container, fragment)
                 .commit(); // Optional: .addToBackStack(null) if needed
     }
+
+
 
 }
