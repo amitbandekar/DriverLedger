@@ -14,17 +14,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
+
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class HomeScreen extends AppCompatActivity {
@@ -35,9 +40,10 @@ public class HomeScreen extends AppCompatActivity {
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
     private ImageView searchIcon;
-    private EditText searchEditText;
-    ImageView addnew,btnExportPdf,btnImport;
-    private TextView HeadingText;
+    private ImageView closesearchbarIcon;
+    private androidx.appcompat.widget.SearchView searchView;
+    private TextView titleTextView;
+    ImageView addnew,btnExportPdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +57,10 @@ public class HomeScreen extends AppCompatActivity {
 
         addnew = findViewById(R.id.addIcon);
         btnExportPdf = findViewById(R.id.btnExportPdf);
-        HeadingText = findViewById(R.id.titleTextView);
-        btnImport = findViewById(R.id.btnImportPdf);
         searchIcon = findViewById(R.id.searchIcon);
-        searchEditText = findViewById(R.id.searchEditText);
+        closesearchbarIcon = findViewById(R.id.closesearchbarIcon);
+        searchView = findViewById(R.id.searchView);
+        titleTextView = findViewById(R.id.titleTextView);
 
         setupViewPager(adapter);
         setupBottomNavigation();
@@ -67,7 +73,7 @@ public class HomeScreen extends AppCompatActivity {
             intent.putExtra("recordId", 0);             // Pass recordId as 0
             intent.putParcelableArrayListExtra("dataList", null);  // Pass bundleList as null
             startActivity(intent);
-
+            finish();
         });
 
         btnExportPdf.setOnClickListener(new View.OnClickListener() {
@@ -105,56 +111,22 @@ public class HomeScreen extends AppCompatActivity {
             }
         });
 
-
-        btnImport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // Android 11 or above
-                    if (!Environment.isExternalStorageManager()) {
-                        // Request for Manage All Files Access permission
-                        try {
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-                            intent.setData(uri);
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                            startActivity(intent);
-                        }
-                    } else {
-                        // Permission already granted, proceed with the import function
-                        openFilePicker(); // Call the file picker function here
-                    }
-                } else {
-                    // Android version below 11 (R), check and request READ_EXTERNAL_STORAGE permission
-                    if (ContextCompat.checkSelfPermission(HomeScreen.this,
-                            android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(HomeScreen.this,
-                                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                    } else {
-                        // If permission is already granted, proceed with the import function
-                        openFilePicker(); // Call the file picker function here
-                    }
-                }
-            }
-        });
-
-
         // Set up search functionality
         searchIcon.setOnClickListener(v -> toggleSearchBar());
+        closesearchbarIcon.setOnClickListener(v -> toggleSearchBar());
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                performSearch(s.toString(),adapter);
+            public boolean onQueryTextSubmit(String query) {
+                performSearch(query,adapter);
+                return true;
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public boolean onQueryTextChange(String newText) {
+                performSearch(newText,adapter);
+                return true;
+            }
         });
     }
     private void handleIncomingIntent() {
@@ -257,27 +229,29 @@ public class HomeScreen extends AppCompatActivity {
         // Your existing UI update code
         addnew.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
         btnExportPdf.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
+        searchIcon.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
         //btnImport.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
-
+        searchView.setVisibility(View.GONE);
+        titleTextView.setVisibility(View.VISIBLE);
         switch (position) {
             case 0:
-                HeadingText.setText("Oil Change");
+                titleTextView.setText("Oil Change");
                 ViewId =1;
                 break;
             case 1:
-                HeadingText.setText("Other Maintainance");
+                titleTextView.setText("Other Maintainance");
                 ViewId =2;
                 break;
             case 2:
-                HeadingText.setText("Tyer Change");
+                titleTextView.setText("Tyer Change");
                 ViewId =3;
                 break;
             case 3:
-                HeadingText.setText("Driver Complaints");
+                titleTextView.setText("Driver Complaints");
                 ViewId =4;
                 break;
             case 4:
-                HeadingText.setText("Profile");
+                titleTextView.setText("Profile");
                 ViewId =5;
                 break;
         }
@@ -300,6 +274,28 @@ public class HomeScreen extends AppCompatActivity {
             }
         }
     }
+
+    private void toggleSearchBar() {
+        if (searchView.getVisibility() == View.VISIBLE) {
+            // Hide the search bar
+            searchView.setVisibility(View.GONE);
+            searchIcon.setVisibility(View.VISIBLE);
+            closesearchbarIcon.setVisibility(View.GONE);
+            titleTextView.setVisibility(View.VISIBLE);
+            btnExportPdf.setVisibility(View.VISIBLE);
+            addnew.setVisibility(View.VISIBLE);
+            searchView.setQuery("", false);
+        } else {
+            // Show the search bar
+            searchIcon.setVisibility(View.GONE);
+            closesearchbarIcon.setVisibility(View.VISIBLE);
+            searchView.setVisibility(View.VISIBLE);
+            titleTextView.setVisibility(View.GONE);
+            btnExportPdf.setVisibility(View.GONE);
+            addnew.setVisibility(View.GONE);
+            searchView.requestFocus();
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -312,21 +308,44 @@ public class HomeScreen extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select PDF"), PICK_PDF_REQUEST);
     }
 
-    private void toggleSearchBar() {
-        if (searchEditText.getVisibility() == View.VISIBLE) {
-            searchEditText.setVisibility(View.GONE);
-            searchEditText.setText("");
-        } else {
-            searchEditText.setVisibility(View.VISIBLE);
-            searchEditText.requestFocus();
-        }
-    }
 
     private void performSearch(String query, ViewPagerAdapter adapter) {
-        ListView currentFragment = (ListView) adapter.getFragment(viewPager.getCurrentItem());
-        if (currentFragment != null) {
-            currentFragment.filterData(query,ViewId);
+        Fragment currentFragment = adapter.getFragment(viewPager.getCurrentItem());
+        if (currentFragment instanceof ListView) {
+            ((ListView) currentFragment).filterData(query,ViewId);
         }
     }
+    public class ViewPagerAdapter extends FragmentStateAdapter {
+        private final List<Fragment> fragments = new ArrayList<>();
 
+        public ViewPagerAdapter(FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+            // Initialize fragments
+            for (int i = 1; i <= 4; i++) {
+                ListView listViewFragment = new ListView();
+                Bundle args = new Bundle();
+                args.putInt("ViewId", i);
+                listViewFragment.setArguments(args);
+                fragments.add(listViewFragment);
+            }
+            fragments.add(new Profile());
+        }
+
+        @Override
+        public Fragment createFragment(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return fragments.size();
+        }
+
+        public Fragment getFragment(int position) {
+            if (position >= 0 && position < fragments.size()) {
+                return fragments.get(position);
+            }
+            return null;
+        }
+    }
 }

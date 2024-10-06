@@ -1,5 +1,7 @@
 package com.example.driverledger;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -22,12 +24,12 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class OtherMaintenance extends Fragment {
 
-    private EditText vehicleNoEditText, modelNameEditText, detailsEditText;
+    private EditText vehicleNoEditText, modelNameEditText, detailsEditText, dateTimePicker;
     private TextView vehicleNoValidationText, modelNameValidationText, detailsValidationText;
     private Button submitButton;
     private DatabaseHelper databaseHelper;
-    int recordid =0;
-    int id =1;
+    int recordid = 0;
+    int id = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,43 +38,82 @@ public class OtherMaintenance extends Fragment {
         // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(getContext());
 
-
-
         // Initialize UI components
-        vehicleNoEditText = view.findViewById(R.id.vehicleNoEditText);
-        modelNameEditText = view.findViewById(R.id.modelNameEditText);
-        detailsEditText = view.findViewById(R.id.detailsEditText);
-        vehicleNoValidationText = view.findViewById(R.id.vehicleNoValidationText);
-        modelNameValidationText = view.findViewById(R.id.modelNameValidationText);
-        detailsValidationText = view.findViewById(R.id.detailsValidationText);
-        submitButton = view.findViewById(R.id.submitButton);
+        initializeViews(view);
+
+        // Set current date and time
+        setCurrentDateTime();
 
         Bundle args = getArguments();
         if (args != null) {
             ArrayList<Bundle> bundleList = args.getParcelableArrayList("bundleList");
             recordid = args.getInt("recordid");
             id = args.getInt("id");
-            // Check if bundleList is null
             if (bundleList != null) {
                 SetData(bundleList);
             }
         } else {
             clearForm();
         }
+
         submitButton.setOnClickListener(v -> {
             if (validateForm()) {
                 saveData();
             }
         });
 
+        // Setup DateTime Picker
+        setupDateTimePicker();
+
         return view;
     }
 
-    // Method to validate form fields
+    private void initializeViews(View view) {
+        vehicleNoEditText = view.findViewById(R.id.vehicleNoEditText);
+        modelNameEditText = view.findViewById(R.id.modelNameEditText);
+        detailsEditText = view.findViewById(R.id.detailsEditText);
+        dateTimePicker = view.findViewById(R.id.otherMaintenanceDateTime); // Add this EditText to your layout
+        vehicleNoValidationText = view.findViewById(R.id.vehicleNoValidationText);
+        modelNameValidationText = view.findViewById(R.id.modelNameValidationText);
+        detailsValidationText = view.findViewById(R.id.detailsValidationText);
+        submitButton = view.findViewById(R.id.submitButton);
+    }
+
+    private void setCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault());
+        String currentDateAndTime = sdf.format(new Date());
+        dateTimePicker.setText(currentDateAndTime);
+    }
+
+    private void setupDateTimePicker() {
+        dateTimePicker.setOnClickListener(v -> showDateTimePicker());
+    }
+
+    private void showDateTimePicker() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
+                            (view1, hourOfDay, minute) -> {
+                                Calendar selectedDateTime = Calendar.getInstance();
+                                selectedDateTime.set(year, month, dayOfMonth, hourOfDay, minute);
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault());
+                                dateTimePicker.setText(sdf.format(selectedDateTime.getTime()));
+                            },
+                            calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE),
+                            false);
+                    timePickerDialog.show();
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
     private boolean validateForm() {
         boolean isValid = true;
 
-        // Validate vehicle number
         if (TextUtils.isEmpty(vehicleNoEditText.getText().toString().trim())) {
             vehicleNoValidationText.setVisibility(View.VISIBLE);
             isValid = false;
@@ -80,7 +121,6 @@ public class OtherMaintenance extends Fragment {
             vehicleNoValidationText.setVisibility(View.GONE);
         }
 
-        // Validate model name
         if (TextUtils.isEmpty(modelNameEditText.getText().toString().trim())) {
             modelNameValidationText.setVisibility(View.VISIBLE);
             isValid = false;
@@ -88,7 +128,6 @@ public class OtherMaintenance extends Fragment {
             modelNameValidationText.setVisibility(View.GONE);
         }
 
-        // Validate details
         if (TextUtils.isEmpty(detailsEditText.getText().toString().trim())) {
             detailsValidationText.setVisibility(View.VISIBLE);
             isValid = false;
@@ -99,16 +138,13 @@ public class OtherMaintenance extends Fragment {
         return isValid;
     }
 
-    // Method to save data into the database
     private void saveData() {
         String vehicleNo = vehicleNoEditText.getText().toString().trim();
         String modelName = modelNameEditText.getText().toString().trim();
         String details = detailsEditText.getText().toString().trim();
+        String selectedDateTime = dateTimePicker.getText().toString();
 
-        // Get current date and time
-        String currentDateTime  = new SimpleDateFormat("dd-MMMM-yy hh:mm a", Locale.getDefault()).format(new Date());
-        // Insert data into the database
-        boolean isInserted = databaseHelper.saveOtherMaintenanceData(recordid,vehicleNo, modelName, details, currentDateTime);
+        boolean isInserted = databaseHelper.saveOtherMaintenanceData(recordid, vehicleNo, modelName, details, selectedDateTime);
 
         if (isInserted) {
             new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
@@ -118,7 +154,6 @@ public class OtherMaintenance extends Fragment {
             Intent intent = new Intent(getContext(), HomeScreen.class);
             intent.putExtra("id", id);
             startActivity(intent);
-            // Close the AddNew activity (parent activity of the fragment)
             requireActivity().finish();
         } else {
             new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
@@ -132,15 +167,20 @@ public class OtherMaintenance extends Fragment {
         vehicleNoEditText.setText("");
         modelNameEditText.setText("");
         detailsEditText.setText("");
-
+        setCurrentDateTime();
     }
-    private void SetData(ArrayList<Bundle> bundleList) {
-        Bundle data = bundleList.get(0); // Assuming you need the first bundle from the list
 
-        // Set text fields with data from the bundle
+    private void SetData(ArrayList<Bundle> bundleList) {
+        Bundle data = bundleList.get(0);
         vehicleNoEditText.setText(data.getString("vehicleNo", ""));
         modelNameEditText.setText(data.getString("modelName", ""));
         detailsEditText.setText(data.getString("details", ""));
 
+        String savedDateTime = data.getString("currentDateTime", "");
+        if (!savedDateTime.isEmpty()) {
+            dateTimePicker.setText(savedDateTime);
+        } else {
+            setCurrentDateTime();
+        }
     }
 }

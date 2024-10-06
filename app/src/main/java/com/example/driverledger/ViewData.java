@@ -86,8 +86,6 @@ private PDFHandler pdfHandler;
                 Intent intent = new Intent(ViewData.this, HomeScreen.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
-
-
                 // Finish the current activity
                 finish();
             }
@@ -104,6 +102,7 @@ private PDFHandler pdfHandler;
                 intent.putExtra("recordId", RecordId);
                 intent.putParcelableArrayListExtra("dataList", bundleList);
                 startActivity(intent);
+                finish();
             }
         });
 

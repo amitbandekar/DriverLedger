@@ -7,6 +7,7 @@
     android:background="#F7C4A5">
 
     <!-- Header Layout with Dark Background -->
+    <!-- Header Layout with Dark Background -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -14,7 +15,6 @@
         android:orientation="horizontal"
         android:background="#3F0D12"
         android:padding="12dp"
-
         android:gravity="center_vertical"
         android:layout_alignParentTop="true">
 
@@ -26,14 +26,7 @@
             android:contentDescription="Export pdf"
             android:padding="2dp"
             android:src="@drawable/ic_export_pdf" />
-        <ImageView
-            android:id="@+id/btnImportPdf"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:contentDescription="Import pdf"
-            android:padding="2dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_import_pdf" />
+
 
         <!-- Title Text (Driver Details) -->
         <TextView
@@ -53,27 +46,42 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_input_add"
             app:tint="#FFFFFF"
-            android:contentDescription="Add Driver"
-           />
-        <!-- New Search Button -->
+            android:contentDescription="Add Driver"/>
+        <!-- Search Icon -->
         <ImageView
             android:id="@+id/searchIcon"
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_search"
-            app:tint="#FFFFFF"
+            android:src="@drawable/ic_search_icon"
             android:contentDescription="Search"
-            android:layout_marginLeft="8dp"/>
+            app:tint="#FFFFFF"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- SearchView (initially hidden) -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:queryHint="Search..."
+            android:background="#FFF8DC"
+            app:iconifiedByDefault="false"
+            />
+
+        <ImageView
+            android:id="@+id/closesearchbarIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_cross"
+            android:contentDescription="Close"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp"/>
+
+
+
     </LinearLayout>
-    <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/headerLayout"
-        android:background="#FFFFFF"
-        android:hint="Search..."
-        android:padding="8dp"
-        android:visibility="gone"/>
 
     <!-- This is where fragments will be loaded -->
     <androidx.viewpager2.widget.ViewPager2

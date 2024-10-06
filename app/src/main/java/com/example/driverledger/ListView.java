@@ -480,6 +480,7 @@ public class ListView extends Fragment {
         public List<HashMap<String, String>> getDataList() {
             return dataList;
         }
+
         private final Context context;
         private List<HashMap<String, String>> dataList;
         private int viewId;
@@ -597,6 +598,9 @@ public class ListView extends Fragment {
                     intent.putExtra("id", viewId);
                     intent.putExtra("recordId", recordId);
                     context.startActivity(intent);
+                    if (getActivity() != null) {
+                        getActivity().finish(); // Close HomeScreenActivity
+                    }
                 });
 
                 ivDelete.setOnClickListener(v -> showDeleteConfirmationDialog(recordId));
@@ -647,7 +651,6 @@ public class ListView extends Fragment {
             }
         }
     }
-
 
 }
 

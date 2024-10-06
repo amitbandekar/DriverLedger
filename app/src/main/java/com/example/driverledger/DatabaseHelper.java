@@ -183,7 +183,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Method to get all data from a specific table
     public Cursor getAllData(String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + tableName, null);
+        return db.rawQuery("SELECT * FROM " + tableName+" ORDER BY currentDateTime desc", null);
     }
 
     // Method to get specific data by ID

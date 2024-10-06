@@ -44,4 +44,9 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="select_date_and_time">Select Date and Time</string>
+    <string name="model_name">Model Name</string>
+    <string name="vehicle_no">Vehicle No.</string>
+    <string name="validation_vehicle_number">Please enter a valid vehicle number</string>
+    <string name="validation_model_name">Please enter a valid model name</string>
 </resources>

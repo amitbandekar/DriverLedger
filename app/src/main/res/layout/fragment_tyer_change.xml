@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F7C4A5">
-
-    <!-- Header Layout with Dark Background -->
-
 
     <!-- Scrollable Content -->
     <ScrollView
@@ -27,7 +23,7 @@
                 android:id="@+id/vehicleNoEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Vehicle No."
+                android:hint="@string/vehicle_no"
                 android:padding="16dp"
                 android:background="@drawable/filled_edit_text"
                 android:inputType="text"
@@ -41,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/vehicleNoEditText"
                 android:layout_marginTop="5dp"
-                android:text="Please enter a valid vehicle number"
+                android:text="@string/validation_vehicle_number"
                 android:textColor="#FF0000"
                 android:textSize="14sp"
                 android:visibility="gone"/>
@@ -53,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/vehicleNoValidationText"
                 android:layout_marginTop="20dp"
-                android:hint="Model Name"
+                android:hint="@string/model_name"
                 android:padding="16dp"
                 android:background="@drawable/filled_edit_text"
                 android:inputType="text"
@@ -86,6 +82,7 @@
                 android:textColor="#333333"
                 android:textColorHint="#888888"/>
 
+
             <!-- Tyre Qty Validation Text -->
             <TextView
                 android:id="@+id/tyreQtyValidationText"
@@ -98,12 +95,27 @@
                 android:textSize="14sp"
                 android:visibility="gone"/>
 
+            <EditText
+                android:id="@+id/TyrechangedateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tyreQtyValidationText"
+                android:layout_marginTop="20dp"
+                android:hint="@string/select_date_and_time"
+                android:padding="16dp"
+                android:background="@drawable/filled_edit_text"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#333333"
+                android:textColorHint="#888888"/>
+
             <!-- Alignment & Balancing Switch -->
             <LinearLayout
                 android:id="@+id/alignmentBalancingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tyreQtyValidationText"
+                android:layout_below="@id/TyrechangedateTime"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
