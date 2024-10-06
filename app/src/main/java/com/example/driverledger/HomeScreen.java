@@ -29,9 +29,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
 public class HomeScreen extends AppCompatActivity {
     private static final String[] TableNames = { "tblServicingDetails", "tblMaintenanceDetails", "tblTyreRepairs", "tblDriverComplaints" };
     int ViewId = 1;
@@ -257,23 +254,8 @@ public class HomeScreen extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with exporting
-                pdfHandler.exportDataToPDF(TableNames[ViewId - 1], HomeScreen.this);
-            } else {
-                // Permission denied, show SweetAlert dialog
-                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Permission Denied")
-                        .setContentText("Cannot export PDF without permission.")
-                        .setConfirmText("OK")
-                        .show();
-            }
-        }
-    }
+
+
 
     private void toggleSearchBar() {
         if (searchView.getVisibility() == View.VISIBLE) {
@@ -296,17 +278,7 @@ public class HomeScreen extends AppCompatActivity {
             searchView.requestFocus();
         }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        pdfHandler.handleFilePicked(requestCode, resultCode, data, this, TableNames[ViewId - 1]); // Call handleFilePicked with necessary parameters
-    }
-    private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/pdf"); // Set the intent type to PDF
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(Intent.createChooser(intent, "Select PDF"), PICK_PDF_REQUEST);
-    }
+
 
 
     private void performSearch(String query, ViewPagerAdapter adapter) {
